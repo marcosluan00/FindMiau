@@ -10,26 +10,30 @@ import { View,
 export default function App() {
   return (
     <KeyboardAvoidingView style={styles.container}>
-      <View>
-        <Image source={require('./assets/logo.png')}/>
+      <View >
+        <Image source={require('./assets/logo.png')}
+        style={styles.viewImagem}
+        />
       </View>
 
       <View>
       <TextInput
+      style={styles.inputText}
       placeholder="Email"
       autoCorrect={false}
       onChangeText={() =>{}}
       />
       <TextInput
+      style={styles.inputText}
       placeholder="Senha"
       autoCorrect={false}
       onChangeText={() =>{}}
       />
-      <TouchableOpacity>
-        <Text> Acessar </Text>
+      <TouchableOpacity style={styles.buttons}>
+        <Text style={styles.textButons}> Acessar </Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text> Cadastrar-se a si mesmo </Text>
+      <TouchableOpacity style={styles.buttons}>
+        <Text style={styles.textButons}> Cadastrar </Text>
       </TouchableOpacity>
       
       </View>
@@ -43,5 +47,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    
   },
+  viewImagem: {
+    width: 150,
+    height: 150,
+  },
+ 
+  inputText:{
+    margin:10,
+    width: 320,
+    fontSize:16,
+    fontWeight:'bold',
+    padding:10,
+    color:'#000',
+    backgroundColor: 'rgba(0,0,0,0.07)',
+    borderRadius:10
+  },
+  textButons:{
+    fontSize:20,
+    textTransform:'uppercase'
+  },
+  buttons: {
+    width:150,
+    height:40,
+    backgroundColor:'#c1c1c1',
+    margin: 10,
+    borderRadius:5,
+    alignItems: 'center',
+    alignSelf:'center',
+    justifyContent: 'center',
+    
+  }
 });
