@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, KeyboardAvoidingView, Image, StyleSheet, TextInput, Input } from 'react-native'
 import { TextInputs, Textos} from './style'
+import { Button } from '../../Components/style'
  
 const Login = () => {
     return (
@@ -17,7 +18,11 @@ const Login = () => {
                 <TextInputs/>
 
                 <Textos> Esqueci minha senha</Textos>
+                
             </View>
+            <Button
+            
+            />
 
         </KeyboardAvoidingView>
     )
