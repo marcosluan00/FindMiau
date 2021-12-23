@@ -1,16 +1,12 @@
 import React from 'react';
-import { View, 
-  TextInput, 
-  StyleSheet, 
-  KeyboardAvoidingView, 
-  Image,
-  TouchableOpacity,
-  Text } from "react-native";
 import Login from './src/Pages/Login';
 
 export default function App() {
   return (
+    <>
     <Login/>
+  
+    </>
   );
 }
 //     <KeyboardAvoidingView style={styles.container}>
