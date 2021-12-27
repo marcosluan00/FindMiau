@@ -29,6 +29,6 @@ text-align: center;
 export const TitleButton = styled.Text`
 font-size:18px;
 font-weight:bold;
-
+color:#fff;
 text-transform:uppercase;
 `

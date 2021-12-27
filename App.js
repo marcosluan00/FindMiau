@@ -1,11 +1,12 @@
 import React from 'react';
 import Login from './src/Pages/Login';
+import Cadastro from './src/Pages/Cadastro'
 
 export default function App() {
   return (
     <>
-    <Login/>
-  
+    {/* <Login/> */}
+    <Cadastro/>
     </>
   );
 }

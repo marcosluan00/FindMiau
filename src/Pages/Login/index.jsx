@@ -1,12 +1,12 @@
 import React from 'react'
-import { View, Text, KeyboardAvoidingView, Image, StyleSheet, TextInput, Input } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Image, StyleSheet, StatusBar } from 'react-native'
 import { TextInputs, Textos, ContainerButton, TitleButton, SubTexto} from './style'
-
+import { SafeAreaView } from 'react-native-safe-area-context'
  
 const Login = () => {
     return (
        
-        <KeyboardAvoidingView style={styles.Container}>
+        <SafeAreaView style={styles.Container}>
             
             <Image source={require('../../assets/logo.png')}
             style={styles.containerImg}
@@ -28,7 +28,7 @@ const Login = () => {
            <View style={styles.rodaPe}>
             <SubTexto>Não possui cadastro ? <Textos> Cadastrar </Textos></SubTexto>
             </View>
-        </KeyboardAvoidingView>
+        </SafeAreaView>
        
     )
 }
@@ -39,25 +39,24 @@ const styles = StyleSheet.create({
     Container: {
         flex: 1,
         backgroundColor:'#64AFFC',
-        alignItems: 'center',
-        
+        alignItems: 'center',   
     },
     containerImg: {
-        width:150,
-        height:42,
-        top:200
+        width:200,
+        height:58,
+        top:120
     },
     containerInputs:{
-        top:300
+        top:220
     },
     containerButton:{
-        top:300
+        top:250
     },
     containerEsqueci:{
-        top:290
+        top:220
     },
     rodaPe:{
-        top:460
+        top:400
     }
     
     
