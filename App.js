@@ -1,12 +1,16 @@
 import React from 'react';
 import Login from './src/Pages/Login';
-import Cadastro from './src/Pages/Cadastro'
+import Cadastro from './src/Pages/Cadastro';
+import Esqueci from './src/Pages/Esqueci';
+import Home from './src/Pages/Home';
 
 export default function App() {
   return (
     <>
     {/* <Login/> */}
-    <Cadastro/>
+    {/* <Cadastro/> */}
+    {/* <Esqueci/> */}
+    <Home/>
     </>
   );
 }

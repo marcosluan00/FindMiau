@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 
 export const Titulo = styled.Text`
     color:#fff;
-    font-size:18px;
+    font-size:14px;
 
 `
 export const CampoInput = styled.TextInput`
@@ -11,13 +11,14 @@ export const CampoInput = styled.TextInput`
     height:40px;
     margin-bottom:15px;
     borderBottomColor: #fff;
-    borderBottomWidth: 2px;
+    borderBottomWidth: 1px;
     color:#fff;
     font-size:14px;
+    padding: 5px;
     
 `
 export const TituloDestaque = styled.Text`
-    font-size:16px;
+    font-size:14px;
     font-weight:bold;
     text-transform:uppercase;
 `

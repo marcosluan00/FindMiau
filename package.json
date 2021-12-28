@@ -22,7 +22,8 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "@iconify/react": "^3.1.0"
   },
   "private": true
 }
