@@ -1,34 +1,39 @@
 import React from 'react'
-import { View, Text, KeyboardAvoidingView, Image, StyleSheet, StatusBar } from 'react-native'
+import { View, Image, StyleSheet } from 'react-native'
 import { TextInputs, Textos, ContainerButton, TitleButton, SubTexto} from './style'
-import { SafeAreaView } from 'react-native-safe-area-context'
- 
+
+import { Container } from '../../styles'
+
 const Login = () => {
     return (
        
-        <SafeAreaView style={styles.Container}>
-            
-            <Image source={require('../../assets/logo.png')}
+        <Container color='primary'>
+            <Container top={100}>
+             <Image source={require('../../assets/logo.png')}
             style={styles.containerImg}
             />
-            
+            </Container>
 
-            <View style={styles.containerInputs}>
+                <Container align='baseline' marginLeft={75} top={75}>
                 <Textos> E-mail </Textos>
                 <TextInputs/>
                 <Textos> Senha </Textos>
                 <TextInputs/>   
-            </View>
-            <Textos style={styles.containerEsqueci}> Esqueci minha senha</Textos>
+                </Container>
 
-            <ContainerButton style={styles.containerButton}>
-            <TitleButton> ENTRAR </TitleButton>
-            </ContainerButton>
+            
+            <Container top={25}>
+                <Textos > Esqueci minha senha</Textos>
+                <ContainerButton >
+                <TitleButton> ENTRAR </TitleButton>
+                </ContainerButton>
+                </Container>
+            
 
-           <View style={styles.rodaPe}>
+           <Container top={70}>
             <SubTexto>Não possui cadastro ? <Textos> Cadastrar </Textos></SubTexto>
-            </View>
-        </SafeAreaView>
+            </Container>
+        </Container>
        
     )
 }
@@ -36,28 +41,11 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-    Container: {
-        flex: 1,
-        backgroundColor:'#64AFFC',
-        alignItems: 'center',   
-    },
+   
     containerImg: {
         width:200,
         height:58,
-        top:120
-    },
-    containerInputs:{
-        top:220
-    },
-    containerButton:{
-        top:250
-    },
-    containerEsqueci:{
-        top:220
-    },
-    rodaPe:{
-        top:400
+        
     }
-    
     
 })
