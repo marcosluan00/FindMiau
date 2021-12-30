@@ -3,18 +3,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, Image, View } from 'react-native';
 import { Titulo, CampoInput,TituloDestaque, ContainerButton, TitleButton } from './style'
 import { AntDesign, Feather } from '@expo/vector-icons'; 
-
+import { Container, ButtonText, Button } from '../../styles'
 
 const Cadastro = () => {
     return (
-        <SafeAreaView style={styles.Container}>
-
+        
+        <Container color='primary'>
+            <Container>
             <Image
             source={require('../../assets/Cadastro.png')}
             style={styles.containerImage}
             />
-
-            <View style={styles.containerInputs}>
+            </Container>
+            <Container  align='baseline' padding={30} >
                 <Titulo> Nome </Titulo>
                 <CampoInput/>
                 <Titulo> Email </Titulo>
@@ -30,17 +31,17 @@ const Cadastro = () => {
                 <AntDesign name="checkcircleo" size={18} color="#fff" /> Eu li e concordo com as 
                 <TituloDestaque> Politicas de Privacidade</TituloDestaque>
                 </Titulo>
-                </View>
-
-                <ContainerButton>
-                    <TitleButton>
-                        Cadastrar
-                    </TitleButton>
-                </ContainerButton>
+            </Container>
+                <Container padding={30}>
+                    <Button radius={10}>
+                        <ButtonText transform='uppercase' weight='bold' size={16}>
+                            Cadastrar
+                        </ButtonText>
+                    </Button>
+                </Container>
             
-            
-           
-        </SafeAreaView>
+        </Container>  
+        
         
     )}
 export default Cadastro;

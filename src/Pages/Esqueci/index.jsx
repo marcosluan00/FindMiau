@@ -1,34 +1,39 @@
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { StyleSheet, Image, View } from 'react-native'
-import { Textos, TextInputs, ContainerButton, TitleButton} from './style' 
-import { FontAwesome5 } from '@expo/vector-icons'; 
-
+import { StyleSheet, Image } from 'react-native'
+import { Container, Button, ButtonText } from '../../styles'
+import { TextInputs, Textos } from './style'
+import sadCat from '../../assets/sad-cat.png'
 
 const Esqueci = () => {
     return (
        
-        <SafeAreaView style={styles.Container}>
-            
+        <Container color='primary'>
+            <Container >
             <Image source={require('../../assets/logo.png')}
             style={styles.containerImg}
             />
+            </Container>  
             
 
-            <View style={styles.containerInputs}>
+            <Container align='baseline' padding={30} top={100}>
                 <Textos> E-mail </Textos>
                 <TextInputs/>
                  
-            </View>
+            </Container>
             
-            <ContainerButton style={styles.containerButton}>
-            <TitleButton> RECUPERAR SUA SENHA </TitleButton>
+            <Container padding={30} top={-60}>
+            <Button radius={10}>
+            <ButtonText transform="uppercase" size={14} weight="bold"> RECUPERAR SUA SENHA </ButtonText>
+            </Button>
+            </Container>
             
-            </ContainerButton>
-        
+            <Container top={-60}>
+            <Image source={sadCat}
             
-            <FontAwesome5 name="sad-cry" size={120} color="#fff" style={styles.icone}/> 
-        </SafeAreaView>
+            />
+            </Container>  
+            
+        </Container>
        
     )
 }

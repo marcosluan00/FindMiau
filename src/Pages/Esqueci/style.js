@@ -1,6 +1,5 @@
 import styled from 'styled-components/native'
 
-
 export const TextInputs = styled.TextInput`
     width:310px;
     height:48px;
@@ -12,20 +11,4 @@ export const Textos = styled.Text`
     color:#fff;
     font-size:14px;
     font-weight:bold;
-`
-export const ContainerButton = styled.TouchableOpacity`
-margin:20px;
-width:310px;
-height:50px;
-border-radius:10px;
-background-color:#3d8bff;
-justify-content:center;
-align-items:center;
-text-align: center;
-`
-export const TitleButton = styled.Text`
-font-size:18px;
-font-weight:bold;
-color:#fff;
-text-transform:uppercase;
 `
