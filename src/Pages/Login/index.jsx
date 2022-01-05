@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Image, StyleSheet } from 'react-native'
-import { TextInputs, Textos, ContainerButton, TitleButton, SubTexto} from './style'
+import {  Image, StyleSheet } from 'react-native'
+import { TextInputs, Textos} from './style'
 import logo from '../../assets/logo.png'
 import { Container, Button, ButtonText } from '../../styles'
 
