@@ -6,19 +6,21 @@ import Home from './src/Pages/Home';
 import Modal from './src/Pages/Modal';
 
 export default function App() {
-  return (
-    <>
-    <Login/>
-    {/* <Cadastro/> */}
-    {/* <Esqueci/> */}
-    {/* <Home/> */}
-    {/* <Modal/> */}
-    </>
-  );
+    return (
+    <Home /> 
+    
+     
+    );
 }
-//     <KeyboardAvoidingView style={styles.container}>
-//       <View >
-//         <Image source={require('./assets/logo.png')}
+//     { /* <Cadastro/> */ } 
+    //  { /* <Esqueci/> */ } 
+    //  {/* <Login/> */}
+    //  {/* <Modal/> */}
+
+
+// <KeyboardAvoidingView style={styles.container}>
+// //       <View >
+// //         <Image source={require('./assets/logo.png')}
 //         style={styles.viewImagem}
 //         />
 //       </View>
@@ -42,7 +44,7 @@ export default function App() {
 //       <TouchableOpacity style={styles.buttons}>
 //         <Text style={styles.textButons}> Cadastrar </Text>
 //       </TouchableOpacity>
-      
+
 //       </View>
 //     </KeyboardAvoidingView>
 //   );
@@ -54,13 +56,13 @@ export default function App() {
 //     backgroundColor: '#fff',
 //     alignItems: 'center',
 //     justifyContent: 'center',
-    
+
 //   },
 //   viewImagem: {
 //     width: 150,
 //     height: 150,
 //   },
- 
+
 //   inputText:{
 //     margin:10,
 //     width: 320,
@@ -84,6 +86,6 @@ export default function App() {
 //     alignItems: 'center',
 //     alignSelf:'center',
 //     justifyContent: 'center',
-    
+
 //   }
 // });
