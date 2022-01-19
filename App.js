@@ -7,9 +7,8 @@ import Modal from './src/Pages/Modal';
 
 export default function App() {
     return (
-    <Home /> 
-    
-     
+    // <Home /> 
+    <Modal/> 
     );
 }
 //     { /* <Cadastro/> */ } 

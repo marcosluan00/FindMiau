@@ -1,71 +1,46 @@
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Image, View } from 'react-native';
-import { Titulo, CampoInput,TituloDestaque, ContainerButton, TitleButton } from './style'
-import { AntDesign, Feather } from '@expo/vector-icons'; 
-import { Container, ButtonText, Button } from '../../styles'
+import { AntDesign } from '@expo/vector-icons'; 
+import { Container, ButtonText, Button, InputInline, ContainerClicker,ContainerImage } from '../../styles'
 
 const Cadastro = () => {
     return (
         
         <Container color='primary'>
-            <Container>
-            <Image
+            <ContainerClicker top={100}>
+            
+            <ContainerImage height={30}
+            width='200px'
             source={require('../../assets/Cadastro.png')}
-            style={styles.containerImage}
+            left={80}
             />
-            </Container>
-            <Container  align='baseline' padding={30} >
-                <Titulo> Nome </Titulo>
-                <CampoInput/>
-                <Titulo> Email </Titulo>
-                <CampoInput/>
-                <Titulo> Telefone </Titulo>
-                <CampoInput/>
-                <Titulo> Senha   </Titulo>
-                <CampoInput/> 
-                <Titulo> Confirmar Senha </Titulo>
-                <CampoInput/>
+           
+            <Container  align='baseline' padding={20} top={10}>
+                <ButtonText size={16}> Nome </ButtonText>
+                <InputInline/>
+                <ButtonText size={16}> Email </ButtonText>
+                <InputInline/>
+                <ButtonText size={16}> Telefone </ButtonText>
+                <InputInline/>
+                <ButtonText size={16}> Senha   </ButtonText>
+                <InputInline/> 
+                <ButtonText size={16}> Confirmar Senha </ButtonText>
+                <InputInline/>
 
-                <Titulo> 
+                <ButtonText size={12}> 
                 <AntDesign name="checkcircleo" size={18} color="#fff" /> Eu li e concordo com as 
-                <TituloDestaque> Politicas de Privacidade</TituloDestaque>
-                </Titulo>
+                <ButtonText size={14} transform='uppercase'> Politicas de Privacidade</ButtonText>
+                </ButtonText>
             </Container>
-                <Container padding={30}>
+                <Container padding={30} top={10}>
                     <Button radius={10}>
                         <ButtonText transform='uppercase' weight='bold' size={16}>
                             Cadastrar
                         </ButtonText>
                     </Button>
                 </Container>
-            
+                </ContainerClicker>
         </Container>  
-        
-        
+         
     )}
 export default Cadastro;
  
-const styles = StyleSheet.create({
-    Container: {
-        flex: 1,
-        backgroundColor:'#64AFFC',
-        alignItems: 'center', 
-           
-    },
-    containerImage: {
-        top:70,
-        marginBottom:100,
-        height:30,
-        width:200,
-        resizeMode: 'stretch'
-    },
-    containerInputs:{
-        marginTop:50,
-        marginLeft:5,
-        marginBottom:50
-    }, 
-    posicaoOlho: {
-        marginLeft:250
-    }
-})
