@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Image } from 'react-native'
-import { Container, Button, ButtonText } from '../../styles'
+import { Container, Button, ButtonText, InputText, Text } from '../../styles'
 import { TextInputs, Textos } from './style'
 import sadCat from '../../assets/sad-cat.png'
 
@@ -16,8 +16,8 @@ const Esqueci = () => {
             
 
             <Container align='baseline' padding={30} top={100}>
-                <Textos> E-mail </Textos>
-                <TextInputs/>
+                <Text weight='bold' size={15}> E-mail </Text>
+                <InputText/>
                  
             </Container>
             

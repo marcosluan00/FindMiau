@@ -9,16 +9,14 @@ export const Container = styled.View`
     justify-content : ${(props) => props.justify || 'center'} ;
     padding: ${(props) => props.padding || 0}px ;
     width:100%;
+    height:100%;
     align-items : ${(props) => props.align || 'center'} ;
     max-width: ${(props) => props.width || '100%'} ;
     max-height: ${(props) => props.height ? props.height + 'px' : 'auto'};
     position: ${(props) => props.position || 'relative'};
     top: ${(props) => props.top ? props.top + 'px' : 0};
     z-index: ${(props) => props.zIndex || 1};
-    margin-left: ${(props) => props.marginLeft ? props.marginLeft + 'px' : 0};
-    margin-top:${(props) => props.marginTop ? props.marginTop + 'px' : 0};
-    margin-bottom:${(props) => props.marginBottom ? props.marginBottom + 'px' : 0};
-    margin-right:${(props) => props.marginRight ? props.marginRight + 'px' : 0}
+    
 `
 export const Button = styled.TouchableOpacity`
     width:100%;
@@ -34,6 +32,31 @@ export const ButtonText = styled.Text`
     color: ${(props) => props.color ? theme.colors[props.color] : theme.colors['light']};
     font-weight: ${props => props.weight || 400};
     text-transform:${props=> props.transform || 'capitalize'};
+    font-size: ${props => props.size || 12}px;   
+`
+export const Text = styled.Text`
+    text-align: left;
+    color: ${(props) => props.color ? theme.colors[props.color] : theme.colors['light']};
+    font-weight: ${props => props.weight || 400};
+    text-transform:${props=> props.transform || 'capitalize'};
     font-size: ${props => props.size || 12}px;
+    margin: 8px 0px;   
+`
+export const InputText = styled.TextInput`
+    background-color:rgba(255,255,255,0.6);
+    padding:10px;
+    width:${props=> props.width || '100%'};
+    border-radius:10px;
+`
+export const InputLine = styled.TextInput`
+    width:${props=> props.width || '100%'};
+    height:45px;
+    borderBottomColor: #FFFFFF;
+    borderBottomWidth: 1px;
+    margin-bottom:5px;
+    color: ${(props) => props.color ? theme.colors[props.color] : theme.colors['light']};
+    font-size: ${props => props.size || 12}px;  
+    padding: 5px;
+    z-index: ${(props) => props.zIndex || 1};
     
 `

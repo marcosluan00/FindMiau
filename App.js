@@ -8,10 +8,10 @@ import Modal from './src/Pages/Modal';
 export default function App() {
   return (
     <>
-    <Login/>
+    {/* <Login/> */}
     {/* <Cadastro/> */}
     {/* <Esqueci/> */}
-    {/* <Home/> */}
+    <Home/>
     {/* <Modal/> */}
     </>
   );
