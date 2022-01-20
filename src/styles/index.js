@@ -29,13 +29,25 @@ export const Button = styled.TouchableOpacity`
     max-width: ${(props) => props.width || '100%'} ;
     height: ${(props) => props.height ? props.height + 'px' : 'auto'};
 `
+export const ButtonBorder = styled.TouchableOpacity`
+    width:100%;
+    padding: ${(props) => props.padding || 0}px ;
+    background: ${(props) => props.type ? theme.colors[props.type] : theme.colors['blue-dark']};
+    border-radius: ${props => props.radius || 0 }px;
+    max-width: ${(props) => props.width || '100%'} ;
+    height: ${(props) => props.height ? props.height + 'px' : 'auto'};
+`
 export const ButtonText = styled.Text`
     text-align: center;
     color: ${(props) => props.color ? theme.colors[props.color] : theme.colors['light']};
     font-weight: ${props => props.weight || 400};
     text-transform:${props=> props.transform || 'capitalize'};
     font-size: ${props => props.size || 12}px;
-    
+    border: 2px;
+    padding:1px;
+    border-radius:15px;
+    margin:5px;
+    borderColor:${theme.colors['blue-dark']};
 `
 export const InputInline = styled.TextInput`
     width: 100%;

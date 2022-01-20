@@ -1,40 +1,42 @@
 import React from 'react'
-
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { StyleSheet, TouchableOpacity, Image } from 'react-native'
-import { AntDesign, Ionicons  } from '@expo/vector-icons'; 
-import {Container } from '../../styles'
-import { logo } from '../../assets/FindMeAuAzul.svg'
-import {camera } from '../../assets/bi_camera.svg'
-import { menu } from '../../assets/gg_menu.svg'
+import {Container, Button, ButtonText, ContainerImage, ContainerClicker, ButtonBorder} from '../../styles'
+import { logo } from '../../assets/LogoAzul.png'
+import {camera } from '../../assets/bi_camera.png'
+import { menu } from '../../assets/hamburguer.png'
 
 
 const Home = () => {
     return (
-       <Container justify='space-around' color="primary" >
+       <Container color="light">
+           <ContainerClicker>
+               <Container>
+               <ContainerImage
+                source={logo}
+                width='200px'
+                height={60}
+                top={100}
+                />
 
-           <Container height={100} top={1} color='light' r>
-           <Image source={camera}/>
-           <Image source={logo}
-            style={styles.ContainerImagem}/>
-            <Image source={menu}/>
-           </Container>
+                   
+               </Container>
+         <Container row='column' justify='space-evenly'>
+            <ButtonBorder width='25%' radius={20} type='light' >
+                <ButtonText color='blue-dark' size={14} weight='bold' transform='uppercase'>Adoção
+                </ButtonText></ButtonBorder>
+            <ButtonBorder width='25%' radius={20} type='light'  >
+                <ButtonText color='blue-dark' size={14} weight='bold' transform='uppercase'>Procura-se
+                    </ButtonText></ButtonBorder>
+            <ButtonBorder width='25%' radius={20} type='light' >
+                <ButtonText color='blue-dark' size={14} weight='bold' transform='uppercase'>Pedidos de ajuda
+                    </ButtonText></ButtonBorder>
+            <ButtonBorder width='26%' radius={20} type='light' >
+                <ButtonText color='blue-dark' size={14} weight='bold' transform='uppercase'>Encontrados
+                    </ButtonText></ButtonBorder>
+         </Container>
 
+         </ContainerClicker>
        </Container>
     )
 }
 
 export default Home
-
-const styles = StyleSheet.create({
-    Container: {
-        flex:1,
-        backgroundColor:'#64AFFC',
-        alignItems: 'center',
-        
-    }, ContainerImagem: {
-        height:30,
-        width: 120,
-        
-    }
-})

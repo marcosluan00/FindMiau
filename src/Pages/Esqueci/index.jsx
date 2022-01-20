@@ -1,14 +1,14 @@
 import React from 'react'
 import { Container, Button, ButtonText, ContainerImage, InputCamp } from '../../styles'
 import sadCat from '../../assets/sad-cat.png'
-
+import logo from '../../assets/logo.png'
 
 const Esqueci = () => {
     return (
        
         <Container color='primary'>
            
-            <ContainerImage source={require('../../assets/logo.png')}
+            <ContainerImage source={logo}
             width='250px'
             height={65}
             top={150}
@@ -25,8 +25,8 @@ const Esqueci = () => {
                 left={100}
                 source={sadCat}
                 width='80px'
-                height={60}
-                top={100}
+                height={90}
+                top={150}
             
                 />
              </Container>
