@@ -6,22 +6,10 @@ import Home from './src/Pages/Home';
 import Modal from './src/Pages/Modal';
 
 export default function App() {
-<<<<<<< HEAD
-  return (
-    <>
-    {/* <Login/> */}
-    {/* <Cadastro/> */}
-    {/* <Esqueci/> */}
-    <Home/>
-    {/* <Modal/> */}
-    </>
-  );
-=======
     return (
     // <Home /> 
     <Modal/> 
     );
->>>>>>> 14cf41f1b16f19c2376d16da930c2a09bc1ce89a
 }
 //     { /* <Cadastro/> */ } 
     //  { /* <Esqueci/> */ } 
