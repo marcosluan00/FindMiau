@@ -6,6 +6,7 @@ import Home from './src/Pages/Home';
 import Modal from './src/Pages/Modal';
 
 export default function App() {
+<<<<<<< HEAD
   return (
     <>
     {/* <Login/> */}
@@ -15,10 +16,22 @@ export default function App() {
     {/* <Modal/> */}
     </>
   );
+=======
+    return (
+    // <Home /> 
+    <Modal/> 
+    );
+>>>>>>> 14cf41f1b16f19c2376d16da930c2a09bc1ce89a
 }
-//     <KeyboardAvoidingView style={styles.container}>
-//       <View >
-//         <Image source={require('./assets/logo.png')}
+//     { /* <Cadastro/> */ } 
+    //  { /* <Esqueci/> */ } 
+    //  {/* <Login/> */}
+    //  {/* <Modal/> */}
+
+
+// <KeyboardAvoidingView style={styles.container}>
+// //       <View >
+// //         <Image source={require('./assets/logo.png')}
 //         style={styles.viewImagem}
 //         />
 //       </View>
@@ -42,7 +55,7 @@ export default function App() {
 //       <TouchableOpacity style={styles.buttons}>
 //         <Text style={styles.textButons}> Cadastrar </Text>
 //       </TouchableOpacity>
-      
+
 //       </View>
 //     </KeyboardAvoidingView>
 //   );
@@ -54,13 +67,13 @@ export default function App() {
 //     backgroundColor: '#fff',
 //     alignItems: 'center',
 //     justifyContent: 'center',
-    
+
 //   },
 //   viewImagem: {
 //     width: 150,
 //     height: 150,
 //   },
- 
+
 //   inputText:{
 //     margin:10,
 //     width: 320,
@@ -84,6 +97,6 @@ export default function App() {
 //     alignItems: 'center',
 //     alignSelf:'center',
 //     justifyContent: 'center',
-    
+
 //   }
 // });

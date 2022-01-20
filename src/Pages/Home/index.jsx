@@ -1,45 +1,26 @@
 import React from 'react'
-import { Header, HeaderTopo, Filtros, ButtonFiltro, ButtonTexto } from './style'
+
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { AntDesign, Ionicons  } from '@expo/vector-icons'; 
+import {Container } from '../../styles'
+import { logo } from '../../assets/FindMeAuAzul.svg'
+import {camera } from '../../assets/bi_camera.svg'
+import { menu } from '../../assets/gg_menu.svg'
+
 
 const Home = () => {
     return (
-       <SafeAreaView style={styles.Container}>
-           <Header>
-               <HeaderTopo> 
-                <TouchableOpacity>
-                    <AntDesign name="camerao" size={38} color="#64AFFC" />
-                </TouchableOpacity>
-                <Image style={styles.ContainerImagem}
-                source={require('../../../src/assets/LogoAzul.png')}
-                />
-                <TouchableOpacity>
-                     <Ionicons name="menu" size={38} color="#64AFFC" />
-                </TouchableOpacity>
-               </HeaderTopo>
+       <Container justify='space-around' color="primary" >
 
-               <Filtros>
-                <ButtonFiltro>
-                    <ButtonTexto> Adoção </ButtonTexto>
-                </ButtonFiltro>
-                <ButtonFiltro>
-                    <ButtonTexto> Procura-se </ButtonTexto>
-                </ButtonFiltro>
-                <ButtonFiltro>
-                    <ButtonTexto> Pedidos de Ajuda </ButtonTexto>
-                </ButtonFiltro>
-                <ButtonFiltro>
-                    <ButtonTexto> Encontrados </ButtonTexto>
-                </ButtonFiltro>
+           <Container height={100} top={1} color='light' r>
+           <Image source={camera}/>
+           <Image source={logo}
+            style={styles.ContainerImagem}/>
+            <Image source={menu}/>
+           </Container>
 
-
-               </Filtros>
-
-           </Header>
-
-       </SafeAreaView>
+       </Container>
     )
 }
 
