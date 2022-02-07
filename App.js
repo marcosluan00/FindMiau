@@ -6,12 +6,13 @@ import Home from './src/Pages/Home';
 import Modal from './src/Pages/Modal';
 import LoginBase from './src/Pages/LoginBase';
 import CadastroBase from './src/Pages/CadastroBase';
-
+import EsqueciBase from './src/Pages/EsqueciBase';
 
 export default function App() {
     return (
     // <LoginBase /> 
-    <CadastroBase/>
+    // <CadastroBase/>
+    <EsqueciBase/>
     );
 }
 //     { /* <Cadastro/> */ } 

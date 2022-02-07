@@ -1,10 +1,10 @@
 import React from 'react'
-import logo from '../../assets/logoPequena.png'
+import logo from '../../assets/logo.png'
 import { NativeBaseProvider,Text,Center ,Box, Input, Icon, Button } from 'native-base'
 import theme from '../../styles/theme.json'
 import { Image } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
-
+import { ContainerImage } from '../../styles'
 
 import {LogBox} from 'react-native';
 
@@ -21,11 +21,14 @@ const LoginBase = () => {
         alignItems='center' justifyContent='space-evenly'
         >
             {/* Container para imagem */}
-            <Box mt='20'>
-                <Image
-                source={logo}
+            
+                <ContainerImage
+                top={20}
+                source={require('../../assets/logo.png')}
+                height={70}
+                width='250px'
                 />
-            </Box>
+            
             {/* Fim do Container */}
            
            {/* INPUTS */}
@@ -59,6 +62,7 @@ const LoginBase = () => {
             </Button>} 
             />
             </Box>
+            
            {/* FIM INPUTS */}
 
             {/* ESQUECI A SENHA MALUUCO */}
@@ -68,8 +72,9 @@ const LoginBase = () => {
                 <Text color='#fff' fontSize='md'>Esqueci minha senha</Text>
             </Button>
 
-            <Button  bg={theme.colors['blue-dark']}
-            siez={"lg"}
+            <Button   bg={theme.colors['blue-dark']}
+                borderRadius="xl"
+                h="50px" 
             >
                 <Text color='#fff' fontSize={'18'} bold >ENTRAR</Text>
             </Button>
