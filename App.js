@@ -7,12 +7,15 @@ import Modal from './src/Pages/Modal';
 import LoginBase from './src/Pages/LoginBase';
 import CadastroBase from './src/Pages/CadastroBase';
 import EsqueciBase from './src/Pages/EsqueciBase';
+import Comentarios from './src/Pages/Comentarios';
+
 
 export default function App() {
     return (
     // <LoginBase /> 
     // <CadastroBase/>
-    <EsqueciBase/>
+    // <EsqueciBase/>
+    <Comentarios/>
     );
 }
 //     { /* <Cadastro/> */ } 

@@ -81,4 +81,5 @@ export const ContainerImage = styled.Image`
     top: ${(props) => props.top ? props.top + 'px' : 0};
     left: ${(props) => props.left ? props.left + 'px' : 0};
     margin-bottom:${(props)=> props.mb ? props.mb + 'px' : 0};
+    margin-top:${(props)=> props.mt ? props.mt + 'px' : 0};
 `
