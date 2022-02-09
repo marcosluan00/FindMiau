@@ -23,11 +23,15 @@ export function Header(props) {
                 alignItems="center" w="100%" >
                 
                 <IconButton icon={<Icon as={props.pacoteIconsL} name={props.nomeIconeL}
-                />} _icon={{ color:"blue.400",size: "md"}}/>
+                />} _icon={{ color:"blue.400",size: "md"}}
+                onClick={props.ClickL}
+                />
                     <Text bold color={theme.colors['primary']} fontSize="2xl"> {props.texto} </Text>
 
                     <IconButton icon={<Icon as={props.pacoteIconsR} name={props.nomeIconeR}/>}
-                _icon={{color:"blue.400",size: "md"}}/>
+                _icon={{color:"blue.400",size: "md"}}
+                onClick={props.ClickL}
+                />
                 </HStack>
     
   </>
@@ -41,17 +45,22 @@ export function HeaderImg(props){
                       <HStack bg={theme.colors['light']} px='2' py='2' justifyContent="space-between" 
                       alignItems="center" w="100%" >
                       
-                      <IconButton icon={<Icon as={props.pacoteIcons} name={props.nomeIcone}
-                      />} _icon={{ color:"blue.400",size: "md"}}/>
+                      <IconButton icon={<Icon as={props.pacoteIconsL} name={props.nomeIconeL}
+                      />} _icon={{ color:"blue.400",size: "md"}} 
+                      onClick={props.ClickR}
+                      />
 
                           <ContainerImage
-                            height={40}
-                            width='250px'
-                            // source={require(props.endereco)}
+                            height={35}
+                            width='120px'
+                            source={props.endereco}
+                            
                             />
       
-                          <IconButton icon={<Icon as={props.pacoteIcons} name={props.nomeIcone}/>}
-                      _icon={{color:"blue.400",size: "md"}}/>
+                          <IconButton icon={<Icon as={props.pacoteIconsR} name={props.nomeIconeR}/>}
+                      _icon={{color:"blue.400",size: "md"}} 
+                      onClick={props.ClickR}
+                      />
                       </HStack>
         </>
         );

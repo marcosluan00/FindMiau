@@ -77,7 +77,7 @@ export const ContainerImage = styled.Image`
     width:100%;
     height: ${(props) => props.height ? props.height + 'px' : 'auto'};
     max-width: ${(props) => props.width || '100%'};
-    resizeMode:stretch;
+    resizeMode:cover;
     top: ${(props) => props.top ? props.top + 'px' : 0};
     left: ${(props) => props.left ? props.left + 'px' : 0};
     margin-bottom:${(props)=> props.mb ? props.mb + 'px' : 0};
