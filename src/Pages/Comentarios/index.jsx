@@ -16,7 +16,6 @@ import { Image } from 'react-native'
 import { MaterialIcons, Feather, MaterialCommunityIcons  } from '@expo/vector-icons'
 import { ContainerImage } from '../../styles'
 
-
 const Comentarios = ()=>{
     return(
     <NativeBaseProvider>
@@ -26,12 +25,12 @@ const Comentarios = ()=>{
                 alignItems="center" w="100%" >
                     <IconButton icon={<Icon as={MaterialCommunityIcons} name="arrow-left"/>}
                 _icon={{ color:"blue.400",size: "md"}}/>
-
                     <Text bold color={theme.colors['primary']} fontSize="2xl"> Comentários </Text>
 
                     <IconButton icon={<Icon as={Feather} name="send"/>}
                 _icon={{color:"blue.400",size: "md"}}/>
                 </HStack>
+                
                 
             {/* ------- */}
 

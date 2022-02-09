@@ -10,5 +10,10 @@
         "blue-light":"#64AFFC61",
         "transparent": "transparent",
         "primary50":"#64AFFC61"
+    },
+    "brand": {
+       "900": "#8287af",
+       "800": "#7c83db",
+       "700": "#b3bef6" 
     }
 }
