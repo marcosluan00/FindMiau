@@ -12,7 +12,6 @@ import HomeBase from './src/Pages/HomeBase'
 import { NativeBaseProvider, extendTheme  } from 'native-base';
 
 
-
 export default function App() {
     const theme = extendTheme({
         colors: {
@@ -44,7 +43,7 @@ export default function App() {
 
     return (
     <NativeBaseProvider theme={theme}>
-    <HomeBase/>
+    <LoginBase/>
     </NativeBaseProvider>
     );
 }
