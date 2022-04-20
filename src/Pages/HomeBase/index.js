@@ -1,48 +1,20 @@
 import React from 'react'
-import logo from '../../assets/logo.png'
-import { NativeBaseProvider,
-    extendTheme,
-    VStack,
-    Stack,
-    Text,
-    Center,
-    Box, 
-    Input, 
-    Icon, 
+import { Box,  
     Button,
-    IconButton,
-    StatusBar,
     HStack,
-    Divider,
-    Heading,
-    AspectRatio,
-    ScrollView 
+    ScrollView,
+    NativeBaseProvider
    } from 'native-base'
 import theme from '../../styles/theme.json'
-import { Image } from 'react-native'
-import { MaterialIcons, EvilIcons, Feather  } from '@expo/vector-icons'
-import { ContainerImage } from '../../styles'
+import { EvilIcons, Feather  } from '@expo/vector-icons'
 import { HeaderImg } from '../../Components/Header'
 import { Card } from '../../Components/Card'
 
 
 const HomeBase = ()=>{
-    return(<>
-    
-        {/* <StatusBar barStyle='light-content'/>
-                <Box safeAreaTop />
-                <HStack bg={theme.colors['light']} px='2' py='2' justifyContent="space-between" 
-                alignItems="center" w="100%" >
-                    <IconButton icon={<Icon as={EvilIcons } name="camera"/>}
-                _icon={{ color:"blue.400",size: "xl"}}/>
-                    <ContainerImage 
-                    height={35}
-                    width='120px'
-                    source={require('../../assets/LogoAzul.png')}
-                    />
-                    <IconButton icon={<Icon as={Feather} name="menu"/>}
-                _icon={{color:"blue.400",size: "md"}}/>
-                </HStack> */}
+    return(
+        <NativeBaseProvider>
+       
                 <HeaderImg 
                 pacoteIconsL={EvilIcons}
                 nomeIconeL={'camera'}
@@ -122,7 +94,8 @@ const HomeBase = ()=>{
                 />
                 </ScrollView>
           </Box>
-                </>
+          </NativeBaseProvider>
+   
     )
 }
 export default HomeBase
