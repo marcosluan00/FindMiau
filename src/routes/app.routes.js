@@ -17,10 +17,32 @@ function AppRoutes() {
         <Stack.Navigator>
             <Stack.Screen
             name='Home'
+            component={ScreenRoutes}
+            options={{
+                headerShown:false}}
+            />
+        </Stack.Navigator>
+    )
+}
+function ScreenRoutes() {
+    return(
+        <Stack.Navigator>
+            <Stack.Screen
+            name='Home'
             component={HomeBase}
             options={{
-                headerShown:false,
+                headerShown:false}}
+            />
+            <Stack.Screen
+            name='Publicar'
+            component={Publicar}
+            options={{
+                headerShown:false
             }}
+            />
+            <Stack.Screen
+            name='Perfil'
+            component={Perfil}
             />
         </Stack.Navigator>
     )

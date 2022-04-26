@@ -10,14 +10,14 @@ import Routes from './src/routes'
 export default function App() {
     return (
       <NavigationContainer>
-        
+        <NativeBaseProvider>
         <AuthProvider>
         <StatusBar backgroundColor='#36393F' barStyle='light-content' translucent={false}/>
         
         <Routes/>
         </AuthProvider>
        
-
+        </NativeBaseProvider>
       </NavigationContainer>
     );
 }

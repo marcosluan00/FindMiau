@@ -2,11 +2,13 @@ import React, { useContext } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 
 import { AuthContext } from '../contexts/auth'
+import { LogBox } from 'react-native';
 
 import AuthRoutes from './auth.routes'
 import AppRoutes from './app.routes'
 
 export default function Routes() {
+    LogBox.ignoreLogs(['Setting a timer for a long period of time'])
     const { signed, loading } = useContext(AuthContext)
 
     if(loading) {
