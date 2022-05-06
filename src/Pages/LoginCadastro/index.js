@@ -28,6 +28,13 @@ const handleClick = () => setMostrar(!mostrar);
     // const [senhaConf, setSenhaConf] = useState('');
     const [telefone, setTelefone] = useState('');
 
+    function mtel(v){
+        v=v.replace(/\D/g,""); //Remove tudo o que não é dígito
+        v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
+        v=v.replace(/(\d)(\d{4})$/,"$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
+        return setTelefone(v);
+    }
+
     function toggleLogin(){
         setLogin(!login)
         setEmail('')
@@ -90,12 +97,21 @@ const handleClick = () => setMostrar(!mostrar);
                h='50'
                size='md'
                variant = "filled" bg={"rgba(255,255,255,0.9)"}
+               _focus={{
+                   bg:'rgba(255,255,255,0.9)',
+                    borderWidth:1.5,
+                    borderColor:'rgba(0,0,0,0.4)'
+               }}
                />
                <Text color='#fff' fontSize='md' bold>Senha</Text>
                <Input  placeholder='*******'
                value={senha}
                onChangeText={(text)=> setSenha(text)}
-               
+               _focus={{
+                bg:'rgba(255,255,255,0.9)',
+                 borderWidth:1.5,
+                 borderColor:'rgba(0,0,0,0.4)'
+            }}
                variant = "filled" bg={"rgba(255,255,255,0.9)"}
                h='50'  mb='2' w={{
                    base:"85%",
@@ -107,8 +123,8 @@ const handleClick = () => setMostrar(!mostrar);
                InputRightElement={
                 <Button size="sm" variant="ghost" w="1/6" h="full" onPress={handleClick}>
                 {mostrar ? 
-                <Icon as={<MaterialIcons name="visibility-off"/>} size={4} /> 
-                : <Icon as={<MaterialIcons name="visibility" />} size={4}/>
+                <Icon as={<MaterialIcons name="visibility-off"/>} size={5} /> 
+                : <Icon as={<MaterialIcons name="visibility" />} size={5}/>
                 }
                 </Button>} 
                 
@@ -164,15 +180,32 @@ const handleClick = () => setMostrar(!mostrar);
             <Box w='85%' >
             <Text color='#fff' mx='2' fontSize='md'>Nome</Text>
             <Input value={name} onChangeText={(text)=> setName(text)}
-            variant="underlined" mb='10px' color='#fff' fontSize='14px'/>
+            variant="underlined" mb='10px' color='#fff' fontSize='14px'
+            _focus={{
+                 borderBottomWidth:1.5,
+                 borderBottomColor:'gray.50'
+            }}
+            />
             <Text color='#fff' mx='2'  fontSize='md'>E-mail</Text>
             <Input value={email} onChangeText={(text)=> setEmail(text)}
-            variant="underlined"  mb='10px' color='#fff' fontSize='14px'/>
+            variant="underlined"  mb='10px' color='#fff' fontSize='14px'
+            _focus={{
+                borderBottomWidth:1.5,
+                borderBottomColor:'gray.50'
+           }}/>
             <Text color='#fff' mx='2' fontSize='md'>Telefone</Text>
-            <Input value={telefone} onChangeText={(text)=> setTelefone(text)}
-            variant="underlined"  mb='10px' color='#fff' fontSize='14px'/>
+            <Input value={telefone} onChangeText={(text)=> mtel(text)}
+            variant="underlined"  mb='10px' color='#fff' fontSize='14px'
+            _focus={{
+                borderBottomWidth:1.5,
+                borderBottomColor:'gray.50'
+           }}/>
             <Text color='#fff' fontSize='md' mx='2' >Senha</Text>
            <Input  value={senha} onChangeText={(text)=> setSenha(text)}
+           _focus={{
+            borderBottomWidth:1.5,
+            borderBottomColor:'gray.50'
+       }}
            variant = "underlined"  mb='10px' 
            size='md' color='#fff' fontSize='14px'
            type={ mostrar ? "text" : "password" }
@@ -181,8 +214,8 @@ const handleClick = () => setMostrar(!mostrar);
            InputRightElement={
             <Button size="sm" variant="ghost" w="1/6" h="full" onPress={handleClick}>
             {mostrar ? 
-            <Icon as={<MaterialIcons name="visibility-off"  />} size={4} /> 
-            : <Icon as={<MaterialIcons name="visibility"  />} size={4}/>
+            <Icon as={<MaterialIcons name="visibility-off"  />} size={5} color='#000'/> 
+            : <Icon as={<MaterialIcons name="visibility"  />} size={5} color='#000'/>
             }
             </Button>} 
             />

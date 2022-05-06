@@ -1,15 +1,17 @@
 import React, { useLayoutEffect, useState, useContext } from 'react';
-import { View } from 'react-native';
+import { View, Platform, KeyboardAvoidingView, Modal } from 'react-native';
 
 import uuid from 'uuid'
-
-import { Box, Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input } from 'native-base'
+import { Box, 
+  NativeBaseProvider,
+  Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input } from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../Components/Header';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { AuthContext } from '../../contexts/auth'
 
-import { addDoc, collection, updateDoc } from 'firebase/firestore'
+
+import { addDoc, collection, updateDoc, doc } from 'firebase/firestore'
 import { db, storage } from '../../firebaseConnection';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
@@ -21,9 +23,11 @@ export default function Publicar() {
   const [categoria, setCategoria] = useState('');
   const [titulo, setTitulo] = useState('')
   const [ url, setUrl]= useState(null)
-  const [descricao, setDescricao] = useState('')
-  const [localizacao, setLocalizacao] = useState('')
+  const [ descricao, setDescricao] = useState('')
+  const [ localizacao, setLocalizacao] = useState('')
   const [ referencia, setReferencia] = useState([])
+  const [ handleTelefone, setHandleTelefone ] = useState(false)
+  const [ ajuda, setAjuda ] = useState('')
 
   const { user } = useContext(AuthContext)
 
@@ -33,7 +37,14 @@ export default function Publicar() {
    navigation.goBack()
    
  }
- 
+ async function uploadFileCamera() {
+   let pickerResult = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+   })
+   setUrl(pickerResult.uri)
+   setReferencia(pickerResult)
+   uploadFileFirestore(pickerResult)
+ }
  
  async function uploadFile() {
    
@@ -93,26 +104,56 @@ async function uploadImageAsync(uri) {
       alert('Algum campo não preenchido')
       return
     }
-      await addDoc(collection(db, categoria), {
-        data: new Date(),
-        autor:user.nome,
-        userId: user.uid,
-        telefone: user.telefone,
-        titulo: titulo,
-        descricao: descricao,
-        localizao: localizacao,
-        imageUrl: url
-      }).then(()=> {
-        alert('Sucesso')
-        handleBack()
+      if(handleTelefone){
+        await addDoc(collection(db, categoria), {
+          data: new Date(),
+          autor:user.nome,
+          userId: user.uid,
+          telefone: user.telefone,
+          titulo: titulo,
+          descricao: descricao,
+          localizao: localizacao,
+          imageUrl: url,
+          infoAjuda: ajuda,
+        }).then((documento)=> {
+          const refAtt = doc(db, categoria, documento.id)
+          updateDoc(refAtt, {
+            idDoc : documento.id
+          })
+          alert('Sucesso')
+          handleBack()
+        })
+
+      } else {
+        await addDoc(collection(db, categoria), {
+          data: new Date(),
+          autor:user.nome,
+          userId: user.uid,
+          titulo: titulo,
+          descricao: descricao,
+          localizao: localizacao,
+          imageUrl: url,
+          infoAjuda: ajuda,
+
+        }).then((documento)=> {
+          const refAtt = doc(db, categoria, documento.id)
+          updateDoc(refAtt, {
+            idDoc : documento.id
+          })
+          alert('Sucesso ')
+          handleBack()
+        })
       }
-       
-      )
  }
 
-
  return (
-  <Box bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' alignItems='center'>
+  <KeyboardAvoidingView 
+    style={{flex:1}}
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    <NativeBaseProvider>
+    <Box bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' alignItems='center'>
+    
       <Header
         pacoteIconsL={MaterialCommunityIcons}
         nomeIconeL='close-circle'
@@ -145,8 +186,9 @@ async function uploadImageAsync(uri) {
               </>
 
             ) : (
-            <Pressable height='90%' bgColor='gray.100' width='95%' borderRadius='md' alignItems='center' justifyContent='center'
-            onPress={()=> uploadFile()}>
+            <Pressable zIndex={9}
+            height='90%' bgColor='gray.100' width='95%' borderRadius='md' alignItems='center' justifyContent='center'
+            onPress={()=> uploadFileCamera()}>
             <MaterialCommunityIcons name="camera-plus" size={50} color="#64AFFC" />
             </Pressable>
             )
@@ -198,18 +240,33 @@ async function uploadImageAsync(uri) {
         <Input
         value={titulo}
         onChangeText={(item) => setTitulo(item)}
+        _focus={{
+          bg:'#fff',
+          borderWidth:'1.5',
+          borderColor:'blue.400'
+        }}
         />
 
         <FormControl.Label>Descrição</FormControl.Label>
         <Input h='70'
         value={descricao}
         onChangeText={(item) => setDescricao(item)}
+        _focus={{
+          bg:'#fff',
+          borderWidth:'1.5',
+          borderColor:'blue.400'
+        }}
         />
 
         <FormControl.Label>Adicionar Localização </FormControl.Label>
         <Input 
         value={localizacao}
         onChangeText={(item) => setLocalizacao(item)}
+        _focus={{
+          bg:'#fff',
+          borderWidth:'1.5',
+          borderColor:'blue.400'
+        }}
         />
         <FormControl.HelperText >
           Ponto de referencia ou endereço
@@ -220,9 +277,12 @@ async function uploadImageAsync(uri) {
             <>
             <FormControl.Label>Adicionar Ajuda </FormControl.Label>
             <Input 
-            value={localizacao}
-            onChangeText={(item) => setLocalizacao(item)}
+            value={ajuda}
+            onChangeText={(item) => setAjuda(item)}
             />
+            <FormControl.HelperText >
+            Informe links de vakinha online, PIX ou contas
+            </FormControl.HelperText>
             </>
         ) : (
            <>
@@ -232,11 +292,16 @@ async function uploadImageAsync(uri) {
         
 
           <Box w='100%' alignItems='center'  flexDirection='row'>
-          <Switch/> <Text color='blue.400'> Compartilhar meu número de telefone </Text>
+          <Switch onValueChange={itemValue => setHandleTelefone(itemValue)}
+          color='#000'
+          /> <Text color='blue.400'> Compartilhar meu número de telefone </Text>
           </Box>
 
         </FormControl>
         </Box>
+        
     </Box>
+    </NativeBaseProvider>
+    </KeyboardAvoidingView>
   );
 }

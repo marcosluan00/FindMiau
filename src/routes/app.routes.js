@@ -10,7 +10,8 @@ const Stack = createStackNavigator()
 import HomeBase from '../Pages/HomeBase'
 import Perfil from '../Pages/Perfil'
 import Publicar from '../Pages/Publicar'
-
+import Modal from '../Pages/Modal'
+import Chat from '../Pages/Chat'
 
 function AppRoutes() {
     return(
@@ -43,6 +44,14 @@ function ScreenRoutes() {
             <Stack.Screen
             name='Perfil'
             component={Perfil}
+            />
+            <Stack.Screen
+            name='Modal'
+            component={Modal}
+            />
+            <Stack.Screen
+            name='Chat'
+            component={Chat}
             />
         </Stack.Navigator>
     )
