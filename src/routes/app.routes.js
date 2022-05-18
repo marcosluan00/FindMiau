@@ -12,6 +12,9 @@ import Perfil from '../Pages/Perfil'
 import Publicar from '../Pages/Publicar'
 import Modal from '../Pages/Modal'
 import Chat from '../Pages/Chat'
+import Posts from '../Pages/Posts'
+import EditarPosts from '../Pages/EditarPosts'
+
 
 function AppRoutes() {
     return(
@@ -48,10 +51,27 @@ function ScreenRoutes() {
             <Stack.Screen
             name='Modal'
             component={Modal}
+            options={{
+                headerTitle: ' Informações '
+            }}
             />
             <Stack.Screen
             name='Chat'
             component={Chat}
+            />
+            <Stack.Screen
+            name='Posts'
+            component={Posts}
+            options={{
+                headerTitle: 'Gerencia de Postagens'
+            }}
+            />
+            <Stack.Screen
+            name='Editar'
+            component={EditarPosts}
+            options={{
+                headerTitle: 'Editar informações'
+            }}
             />
         </Stack.Navigator>
     )

@@ -1,17 +1,18 @@
-import React, { useLayoutEffect, useState, useContext } from 'react';
+import React, { useLayoutEffect, useState, useContext, useEffect } from 'react';
 import { View, Platform, KeyboardAvoidingView, Modal } from 'react-native';
 
 import uuid from 'uuid'
 import { Box, 
   NativeBaseProvider,
-  Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input, ScrollView, IconButton } from 'native-base'
+  Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input, IconButton, Icon,
+  ScrollView } from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../Components/Header';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'
 import { AuthContext } from '../../contexts/auth'
 
 
-import { addDoc, collection, updateDoc, doc } from 'firebase/firestore'
+import { addDoc, collection, updateDoc, doc, query, where, onSnapshot } from 'firebase/firestore'
 import { db, storage } from '../../firebaseConnection';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
@@ -19,9 +20,14 @@ import { ContainerImage } from '../../styles'
 
 import * as ImagePicker from 'expo-image-picker'
 
-export default function Publicar() {
+export default function EditarPosts (props) {
+  
+ const navigation = useNavigation()
 
 
+  const { user } = useContext(AuthContext)
+
+  const [lista, setLista] = useState([])
   const [categoria, setCategoria] = useState('');
   const [titulo, setTitulo] = useState('')
   const [ url, setUrl]= useState(null)
@@ -30,21 +36,40 @@ export default function Publicar() {
   const [ handleTelefone, setHandleTelefone ] = useState(false)
   const [ ajuda, setAjuda ] = useState('')
   const [ open, setOpen]= useState(false)
+  const [confirmar, setConfirmar] = useState(false)
 
-  const { user } = useContext(AuthContext)
+    useEffect(() => {
+        const q = query(collection(db, 'Postagens'), where('idDoc', '==', props.route.params?.doc))
 
+        const subscriber = onSnapshot((q), snap => {
+            const postList =[]
 
- const navigation = useNavigation()
+            snap.forEach(doc => {
+                postList.push({
+                    ...doc.data(),
+                })
+            })
+            const data = {
+              ...postList
+            }
+            setCategoria(data[0].categoria)
+            setTitulo(data[0].titulo)
+            setUrl(data[0].imageUrl)
+            setDescricao(data[0].descricao)
+            setLocalizacao(data[0].localizao)
+            setAjuda(data[0].infoAjuda)
+        })
+        
+    }, [])
  
  function handleBack(){
-   navigation.goBack()
+   navigation.navigate('Home')
    
  }
  async function uploadFileCamera() {
    let pickerResult = await ImagePicker.launchCameraAsync({
     allowsEditing: true,
    })
-   console.log('Imagem selecionada')
    setUrl(pickerResult.uri)
    uploadFileFirestore(pickerResult)
  }
@@ -53,6 +78,7 @@ export default function Publicar() {
    
   let pickerResult = await ImagePicker.launchImageLibraryAsync( {
    allowsEditing: true,
+   aspect:[4, 3]
   })
   console.log('Imagem selecionada')
   setUrl(pickerResult.uri)
@@ -90,30 +116,23 @@ async function uploadImageAsync(uri) {
         
         const result = await uploadBytes(fireRef, blob).then((response)=> {
           console.log('foi')
-          console.log(response)
+
         }).catch((e)=> {
           console.log(e)
         })
-        console.log('URL _-------_')
         console.log(url)
-        console.log('RESULT _ -----------------_')
-        console.log(result)
         return await getDownloadURL(fireRef);
 }
 
- 
-
- async function handlePublicar() {
+ async function handleEdit() {
     if(categoria === '' || titulo === '' || descricao === '' ){
       alert('Algum campo não preenchido')
       return
     }
       if(handleTelefone){
-        await addDoc(collection(db, 'Postagens/'), {
+        await updateDoc(doc(db, 'Postagens',props.route.params?.doc), {
           data: new Date(),
-          autor:user.nome,
           categoria: categoria,
-          userId: user.uid,
           telefone: user.telefone,
           titulo: titulo,
           descricao: descricao,
@@ -121,50 +140,44 @@ async function uploadImageAsync(uri) {
           imageUrl: url,
           infoAjuda: ajuda,
         }).then((documento)=> {
-          const refAtt = doc(db, 'Postagens/', documento.id)
-          updateDoc(refAtt, {
-            idDoc : documento.id
-          })
           alert('Sucesso')
           handleBack()
         })
 
       } else {
-        await addDoc(collection(db, 'Postagens/'), {
+        await updateDoc(doc(db, 'Postagens/',props.route.params?.doc), {
           data: new Date(),
-          autor:user.nome,
           categoria: categoria,
-          userId: user.uid,
           titulo: titulo,
           descricao: descricao,
           localizao: localizacao,
           imageUrl: url,
           infoAjuda: ajuda,
-
         }).then((documento)=> {
-          const refAtt = doc(db, 'Postagens/', documento.id)
-          updateDoc(refAtt, {
-            idDoc : documento.id
-          })
+          
           alert('Sucesso ')
           handleBack()
         })
       }
  }
+ useLayoutEffect(() => {
+  navigation.setOptions({
+    headerRight: (props) => (
+    <Button mr='4' onPress={handleEdit}
+    bgColor='blue.500'
+    w='1/2'
+    _text={{
+      fontWeight:'bold'
+    }}>   
+      Editar
+    </Button>)
+  })
+})
 
- return (
-  <ScrollView bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' >
-  <Header
- pacoteIconsL={MaterialCommunityIcons}
- nomeIconeL='close-circle'
- ClickL={handleBack}
- endereco={require('../../assets/novaPublicacao.png')}
- pacoteIconsR={MaterialCommunityIcons}
- nomeIconeR='arrow-right-bold-circle'
- h={30}
- w='190px'
- ClickR={handlePublicar}
- />
+  return(
+
+    <ScrollView bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' >
+    
         {/* container image */}
           <Box w='97%'
           bg='#fff'
@@ -184,7 +197,7 @@ async function uploadImageAsync(uri) {
               height='190'
               width='92%'
               />
-          <IconButton h='1/2' w='1/2' position='absolute' onPress={()=> setOpen(true)}
+            <IconButton h='1/2' w='1/2' position='absolute' onPress={()=> setOpen(true)}
             _icon={{
           as: MaterialCommunityIcons,
           name: "camera-plus",
@@ -368,6 +381,7 @@ async function uploadImageAsync(uri) {
 
       </Modal>
         
-    </ScrollView> 
-  );
+    </ScrollView>                
+
+  ) 
 }

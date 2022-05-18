@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ScrollView, StyleSheet, Image, TouchableOpacity, View } from 'react-native'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-
+import { AuthContext } from '../../contexts/auth'
 
 import { Box, Text, AspectRatio, Stack, Heading, Input, Button, IconButton, Icon, HStack, Pressable } from 'native-base'
 import { ContainerImage } from '../../styles'
@@ -11,28 +11,25 @@ import { ContainerImage } from '../../styles'
 import { useNavigation } from '@react-navigation/native'
 
 export default function Modal (props) {
+    const { user } = useContext(AuthContext)
 
     const navigation = useNavigation()
-    
-    const [mensagem, setMensagem] = useState('')
 
-    function irChat() {
-      navigation.navigate('Chat')
-    }
-    
-    function mtel(v){
-        v=v.replace(/\D/g,""); //Remove tudo o que não é dígito
-        v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
-        v=v.replace(/(\d)(\d{4})$/,"$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
-        return v;
+    function irComentarios() {
+      navigation.navigate('Chat', {doc: props.route.params?.idDoc, img: props.route.params?.imageUrl })
     }
 
+    function irEditar(){
+      navigation.navigate('Editar', {doc: props.route.params?.idDoc})
+    }
+    console.log(props)
+    
     return (
         <Box bgColor="rgba(100, 175, 252, 0.7)" flex={1}>
+          <ScrollView>
         <Box maxW="98%" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" 
         flex={1}
         m='1'
-        h='98%'
         _dark={{
             borderColor: "coolGray.600",
             backgroundColor: "gray.700"
@@ -57,16 +54,16 @@ export default function Modal (props) {
               <Stack px="4" space={1}>
 
               <Text color='blue.300' fontSize='sm' textAlign='right' fontWeight='bold' 
-              my='1'
+              my='2'
               >Postado por { props.route.params?.autor} </Text>
                 <Stack my={2}>
                     {/* Titulo */}
-                  <Heading size='xl' >
+                  <Heading size='xl' my='1' >
                     {props.route.params?.titulo}
                   </Heading>
 
                   {/* Localizacao */}
-                  <Text fontSize="sm" _light={{
+                  <Text fontSize="md" my='1' _light={{
                   color: "coolGray.600"
                 }} _dark={{
                   color: "violet.400"
@@ -91,48 +88,52 @@ export default function Modal (props) {
                     </>
                 )
                 }
-                <Box flexDirection='row'>
-                <Input width='90%'
-                variant="underlined"
-                placeholder='Enviar uma mensagem '
-                placeholderTextColor='blue.400'
-                value={mensagem}
-                onChangeText={text => setMensagem(text)}
-                InputLeftElement={
-                    <Icon as={MaterialCommunityIcons} name="message-text-outline" size={5} color="blue.400" mr='2'/>
-                }
+                
+                <Pressable flexDir='row' 
+                my='6' p='1'
+                >
+                  <Icon as={MaterialCommunityIcons} name="message-text-outline" size={5} color="blue.400" mr='2'/>
+                  <Text color='blue.400' fontSize='md'
+                  fontStyle='italic'
+                  > Enviar uma mensagem privada </Text>
+                </Pressable>
 
-                />
-                <IconButton w='40px'
-                borderRadius="full" _icon={{
-                    color: "blue.400",
-                    size: "lg"
-                }}  
-                icon={<Icon as={MaterialCommunityIcons} name='send-circle'/>}
-                />
-                </Box>
               </Stack>
 
 
-              <HStack justifyContent='center'>
+              <HStack justifyContent='space-evenly' alignItems='center' my='10'>
                 
-                <Pressable m='2' top='0'
-                onPress={irChat}
+                <Pressable alignItems='center'
+                onPress={irComentarios}
                 >
                 <Icon as={MaterialCommunityIcons} name="chat-processing" size={10} color="blue.400" />
                 <Text color="blue.600" > Comentarios </Text>
                 </Pressable>
                 
-                <Pressable m='2'
+                <Pressable alignItems='center'
                 onPress={() => navigation.goBack()}
                 >
                 <Icon as={Feather} name="minimize-2" size={10} color="blue.400"/>
                 <Text color="blue.600" textAlign='center'> Minimizar </Text>
                 </Pressable>
+
+                { (user.uid === props.route.params?.userId) ? (
+                  <Pressable alignItems='center'
+                  onPress={irEditar}
+                  >
+                  <Icon as={Feather} name="edit" size={8} color="blue.400"/>
+                  <Text color="blue.600" textAlign='center'> Editar </Text>
+                  </Pressable>
+                ) : (
+                  <></>
+                )
+                  
+                }
+
                 
                 </HStack>
         </Box>
-            
+        </ScrollView>
         </Box>
     )
 }

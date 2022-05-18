@@ -18,7 +18,7 @@ import { TouchableOpacity } from 'react-native'
 import { AuthContext } from '../../contexts/auth'
 
 import { db } from '../../firebaseConnection'
-import { collection, orderBy, query, onSnapshot } from 'firebase/firestore'
+import { collection, orderBy, query, onSnapshot, where } from 'firebase/firestore'
 
 import Card from '../../Components/Card'
 
@@ -37,13 +37,17 @@ const HomeBase = ()=>{
     function handlePost() {
         navigation.navigate('Publicar')
     }
+    function handlePostagens() {
+        navigation.navigate('Posts')
+    }
 
     const [lista, setLista] = useState([])
 
     useEffect(() => {
-        const refAdocao = collection(db, 'adocao')
 
-        const subscriber = onSnapshot((refAdocao), snap => {
+        const q = query(collection(db, 'Postagens'), where('categoria', '==', 'adocao'))
+
+        const subscriber = onSnapshot((q), snap => {
             const postList =[]
 
             snap.forEach(doc => {
@@ -54,6 +58,7 @@ const HomeBase = ()=>{
             })
             setLista(postList)
             setLoading(false)
+            setOpen(false)
         })
         return () => subscriber()
     }, [])
@@ -63,9 +68,9 @@ const HomeBase = ()=>{
         lista.splice(0, lista.length)
         setLoading(true)
 
-        const refAdocao = collection(db, 'adocao')
+        const q = query(collection(db, 'Postagens'), where('categoria', '==', 'adocao'))
 
-        await onSnapshot((refAdocao), snap => {
+        const subscriber = await onSnapshot((q), snap => {
             const postList =[]
 
             snap.forEach(doc => {
@@ -81,14 +86,15 @@ const HomeBase = ()=>{
             setButtonEncontrados(false)
             setButtonAjuda(false)
         })
+        return () => subscriber()
     }
     async function listaPerdidos() {
         setLoading(true)
         lista.splice(0, lista.length)
 
-        const refAdocao = collection(db, 'perdidos')
+        const q = query(collection(db, 'Postagens'), where('categoria', '==', 'perdidos'))
 
-        await onSnapshot((refAdocao), snap => {
+        const subscriber = await onSnapshot((q), snap => {
             const postList =[]
 
             snap.forEach(doc => {
@@ -104,14 +110,15 @@ const HomeBase = ()=>{
             setButtonEncontrados(false)
             setButtonAjuda(false)
         })
+        return () => subscriber()
     }
     async function listaEncontrados() {
         setLoading(true)
         lista.splice(0, lista.length)
 
-        const refAdocao = collection(db, 'encontrados')
+        const q = query(collection(db, 'Postagens'), where('categoria', '==', 'encontrados'))
 
-        await onSnapshot((refAdocao), snap => {
+        const subscriber = await onSnapshot((q), snap => {
             const postList =[]
 
             snap.forEach(doc => {
@@ -127,14 +134,14 @@ const HomeBase = ()=>{
             setButtonEncontrados(true)
             setButtonAjuda(false)
         })
+        return () => subscriber()
     }
     async function listaAjuda() {
         setLoading(true)
         lista.splice(0, lista.length)
 
-        const refAdocao = collection(db, 'ajuda')
-
-        await onSnapshot((refAdocao), snap => {
+        const q = query(collection(db, 'Postagens'), where('categoria', '==', 'ajuda'))
+        const subscriber = await onSnapshot((q), snap => {
             const postList =[]
 
             snap.forEach(doc => {
@@ -150,6 +157,7 @@ const HomeBase = ()=>{
             setButtonEncontrados(false)
             setButtonAjuda(true)
         })
+        return () => subscriber()
     }
 
 
@@ -267,10 +275,14 @@ const HomeBase = ()=>{
                 </Box>
             {
                 loading ? (
+                    <Box position='absolute' top='1/2' left='2/6'>
                     <ActivityIndicator
-                    size={50}
+                    size={120}
                     color='blue'
+                    
                     />
+
+                    </Box>
                 ): (
                     <FlatList 
                     showsVerticalScrollIndicator={false}
@@ -318,6 +330,7 @@ const HomeBase = ()=>{
                 Home
                 </Button>
                 <Button variant='ghost' 
+                onPress={handlePostagens}
                 leftIcon={<MaterialCommunityIcons name="history" size={24} color="#64AFFC" /> }
                 _text={{
                     fontSize:'16',
