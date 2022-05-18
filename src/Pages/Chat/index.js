@@ -6,7 +6,7 @@ import React, {
     useContext
   } from 'react';
 import { TouchableOpacity, Image } from 'react-native';
-import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, InputToolbar, Bubble, Send } from 'react-native-gifted-chat';
 import {
     collection,
     addDoc,
@@ -15,12 +15,13 @@ import {
     onSnapshot
 } from 'firebase/firestore';
 import { db } from '../../firebaseConnection'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { AuthContext } from '../../contexts/auth'
 import { useNavigation } from '@react-navigation/native'
 import { ContainerImage } from '../../styles'
 
-import { Avatar, Box, Text } from 'native-base'
+import { Avatar, Box, Icon, Pressable, Text } from 'native-base'
 
 
 export default function Chat({ route }) {
@@ -32,6 +33,26 @@ const navigation = useNavigation()
 const { user } =useContext(AuthContext)    
 const [messages, setMessages] = useState([]);
 
+const customSend = props=> {
+  return(
+    <Send
+      {...props}
+       containerStyle={{
+       justifyContent: 'center',
+       alignItems: 'center',
+       alignSelf: 'center',
+       marginRight: 3,
+       backgroundColor:'#3D8BFF',
+       paddingHorizontal: 10,
+       borderRadius:5
+      }}>
+      <Box flexDir='row' >
+       <Text color='gray.50' fontSize='sm' fontWeight='bold' mr='1'> Enviar </Text>
+      </Box>
+      </Send>
+  )
+}
+
 const customtInputToolbar = props => {
   return (
     <InputToolbar
@@ -40,11 +61,12 @@ const customtInputToolbar = props => {
         backgroundColor: "white",
         borderTopColor: "#E8E8E8",
         borderTopWidth: 1,
-        padding: 5,
-        borderTopRightRadius: 5,
-        borderTopLeftRadius: 5,
-        marginTop:15,
+        paddingVertical:3,
+        paddingHorizontal: 5,
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
       }}
+      
     />
   );
 };
@@ -54,32 +76,45 @@ const customRenderBubble = props => {
       {...props}
 
       wrapperStyle={{
-        right: { borderTopRightRadius: 15,
-        width: '50%',
+        right: { 
+        width: '70%',
+        marginVertical:2
         },
-        left: { borderTopLeftRadius: 15,
-        width: '50%' },
+        left: { 
+        width: '70%',
+        marginVertical:2
+      },
+      }}
+      textStyle={{
+        right:{
+          textAlign:'justify',
+          padding: 5
+        },
+        left:{
+          textAlign:'justify',
+          padding: 5
+        }
       }}
       containerToPreviousStyle={{
         right: { borderTopRightRadius: 15,
-          width: '50%'
+          width: '70%'
           },
           left: { borderTopLeftRadius: 15,
-          width: '50%' },
+          width: '70%' },
       }}
       containerToNextStyle={{
         right: { borderTopRightRadius: 15,
-          width: '50%'
+          width: '70%'
           },
           left: { borderTopLeftRadius: 15,
-          width: '50%' },
+          width: '70%' },
       }}
       containerStyle={{
         right: { borderTopRightRadius: 15,
-          width: '50%',
+          width: '70%',
           },
           left: { borderTopLeftRadius: 15,
-          width: '50%',
+          width: '70%',
           },
       }}
     />
@@ -141,20 +176,27 @@ useLayoutEffect(() => {
   }, []);
   return (
     <>
-    <ContainerImage resizeMode="contain" source={{ uri: route.params?.imageUrl }}
-    alt="image" height={250}
-     />
     <GiftedChat
+    listViewProps={{
+      style:{
+        backgroundColor: '#64AFFC61'
+      }
+    }}
       renderInputToolbar={props => customtInputToolbar(props)}
       renderBubble={props=> customRenderBubble(props)}
+      onSend={messages => onSend(messages)}
+      renderSend={props=> customSend(props)}
+
+      renderAvatar={null}   
       messages={messages}
-      showAvatarForEveryMessage={false}
-      
+
+      alwaysShowSend 
       user={{
-        _id: user?.nome
+        _id: user?.uid,
+        name:user?.nome,
       }}
       renderUsernameOnMessage={true}
-      onSend={messages => onSend(messages)}
+      
       
       placeholder='Envie sua mensagem'
       

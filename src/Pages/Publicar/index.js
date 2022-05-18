@@ -43,20 +43,27 @@ export default function Publicar() {
  async function uploadFileCamera() {
    let pickerResult = await ImagePicker.launchCameraAsync({
     allowsEditing: true,
+    presentationStyle: 0,
+    aspect: [4, 3],
    })
    console.log('Imagem selecionada')
-   setUrl(pickerResult.uri)
+   
    uploadFileFirestore(pickerResult)
+   setOpen(false)
  }
  
  async function uploadFileGalery() {
    
   let pickerResult = await ImagePicker.launchImageLibraryAsync( {
    allowsEditing: true,
+   presentationStyle: 0,
+   aspect: [4, 3],
   })
   console.log('Imagem selecionada')
-  setUrl(pickerResult.uri)
+  
   uploadFileFirestore(pickerResult)
+  
+  setOpen(false)
 }
 
 const uploadFileFirestore = async (pickerResult) => {
@@ -94,10 +101,6 @@ async function uploadImageAsync(uri) {
         }).catch((e)=> {
           console.log(e)
         })
-        console.log('URL _-------_')
-        console.log(url)
-        console.log('RESULT _ -----------------_')
-        console.log(result)
         return await getDownloadURL(fireRef);
 }
 
@@ -178,13 +181,13 @@ async function uploadImageAsync(uri) {
               <>
             <Pressable
             height='100%' bgColor='gray.100' width='100%' borderRadius='md' alignItems='center' justifyContent='center'
-            onPress={()=> setOpen(true)}>
+            onPress={uploadFileGalery}>
             <ContainerImage
               source={{ uri: url}}
               height='190'
               width='92%'
               />
-          <IconButton h='1/2' w='1/2' position='absolute' onPress={()=> setOpen(true)}
+          <IconButton h='1/2' w='1/2' position='absolute' onPress={uploadFileGalery}
             _icon={{
           as: MaterialCommunityIcons,
           name: "camera-plus",
@@ -200,7 +203,7 @@ async function uploadImageAsync(uri) {
             ) : (
             <Pressable zIndex={9}
             height='90%' bgColor='gray.100' width='92%' borderRadius='md' alignItems='center' justifyContent='center'
-            onPress={()=> setOpen(true)}>
+            onPress={uploadFileGalery}>
             <MaterialCommunityIcons name="camera-plus" size={50} color="#64AFFC" />
             </Pressable>
             )

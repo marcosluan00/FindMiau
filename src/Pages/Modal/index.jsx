@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { ScrollView, StyleSheet, Image, TouchableOpacity, View } from 'react-native'
+import * as Linking from 'expo-linking';
 
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { AuthContext } from '../../contexts/auth'
 
@@ -9,11 +9,47 @@ import { Box, Text, AspectRatio, Stack, Heading, Input, Button, IconButton, Icon
 import { ContainerImage } from '../../styles'
 
 import { useNavigation } from '@react-navigation/native'
+import {
+  collection,
+  addDoc,
+  orderBy,
+  query,
+  onSnapshot
+} from 'firebase/firestore';
+import { db } from '../../firebaseConnection'
+import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
 
 export default function Modal (props) {
     const { user } = useContext(AuthContext)
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+      const collectionRef = collection(db, 'comentarios_'+ props.route.params?.idDoc);
+      const q = query(collectionRef, orderBy('createdAt', 'desc'));
+  
+      const unsubscribe = onSnapshot(q, querySnapshot => {
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: doc.data().user
+          }))
+        );
+      });
+  
+      return () => unsubscribe();
+    }, []);
+
 
     const navigation = useNavigation()
+
+    function handleLigar(){
+      Linking.openURL('tel:'+props.route.params?.telefone)
+    }
+    function handleWhat(){
+      Linking.openURL("https://api.whatsapp.com/send?phone=55"+props.route.params?.telefone+"&text=Olá vim pela sua publicação no aplicativo FindMiau")
+    }
 
     function irComentarios() {
       navigation.navigate('Chat', {doc: props.route.params?.idDoc, img: props.route.params?.imageUrl })
@@ -22,12 +58,10 @@ export default function Modal (props) {
     function irEditar(){
       navigation.navigate('Editar', {doc: props.route.params?.idDoc})
     }
-    console.log(props)
     
     return (
-        <Box bgColor="rgba(100, 175, 252, 0.7)" flex={1}>
-          <ScrollView>
-        <Box maxW="98%" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" 
+        <Box bgColor="rgba(100, 175, 252, 0.7)" h='100%'>
+        <Box maxW="98%" rounded="lg" borderColor="coolGray.200" borderWidth="1" 
         flex={1}
         m='1'
         _dark={{
@@ -40,7 +74,7 @@ export default function Modal (props) {
               <Box>
                   { props.route.params?.imageUrl ? (
                     <ContainerImage resizeMode="contain" source={{ uri: props.route.params?.imageUrl }}
-                    alt="image" height={250}
+                    alt="image" height={220}
                     />
                   ): (
                     <ContainerImage
@@ -54,11 +88,11 @@ export default function Modal (props) {
               <Stack px="4" space={1}>
 
               <Text color='blue.300' fontSize='sm' textAlign='right' fontWeight='bold' 
-              my='2'
+              my='1'
               >Postado por { props.route.params?.autor} </Text>
-                <Stack my={2}>
+                <Stack my={1}>
                     {/* Titulo */}
-                  <Heading size='xl' my='1' >
+                  <Heading my='1' fontSize='xl'>
                     {props.route.params?.titulo}
                   </Heading>
 
@@ -70,38 +104,52 @@ export default function Modal (props) {
                 }} fontWeight="400">
                     {props.route.params?.localizao}
                   </Text>
-    
                 {/*Descrição */}
-                <Text fontWeight="500" fontSize='xl'>
+                <Text fontWeight="500" fontSize='md' my='2'>
                 {props.route.params?.descricao}
                 </Text >
                 </Stack>
-                <Box h='10'>
+
+                <Box h='1/5' my='2'>
+                  <Text fontStyle='italic'> Aqui vai tem algum campo </Text>
+                
 
                 </Box>
 
                 {
                 props.route.params?.telefone ? (
-                    <Text  fontSize="sm" fontWeight="400"> Nº para contato: {props.route.params?.telefone} </Text>
+                    <Text mb='2' fontSize="sm" fontWeight="400"> Nº para contato: {props.route.params?.telefone} </Text>
                 ) : (
                     <>
                     </>
                 )
                 }
-                
+                <Box flexDir='row'>
                 <Pressable flexDir='row' 
-                my='6' p='1'
+                 p='1' mr='2'
+                onPress={handleLigar}
                 >
-                  <Icon as={MaterialCommunityIcons} name="message-text-outline" size={5} color="blue.400" mr='2'/>
-                  <Text color='blue.400' fontSize='md'
+                  <Icon as={MaterialCommunityIcons} name="cellphone" size={6} color="blue.500" mr='1'/>
+                  <Text color='blue.500' fontSize='md'
                   fontStyle='italic'
-                  > Enviar uma mensagem privada </Text>
+                  > Fazer ligação </Text>
                 </Pressable>
 
+                <Pressable flexDir='row' 
+                 p='1'
+                onPress={handleWhat}
+                >
+                  <Icon as={MaterialCommunityIcons} name="whatsapp" size={6} color="blue.500" mr='1'/>
+                  <Text color='blue.500' fontSize='md'
+                  fontStyle='italic'
+                  > Mensagem Whatsapp </Text>
+                </Pressable>
+                
+                </Box>
               </Stack>
 
 
-              <HStack justifyContent='space-evenly' alignItems='center' my='10'>
+              <HStack justifyContent='space-evenly' alignItems='center'>
                 
                 <Pressable alignItems='center'
                 onPress={irComentarios}
@@ -126,14 +174,11 @@ export default function Modal (props) {
                   </Pressable>
                 ) : (
                   <></>
-                )
-                  
+                ) 
                 }
-
-                
                 </HStack>
+                
         </Box>
-        </ScrollView>
         </Box>
     )
 }
