@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import {Text,Box, Input, Icon, Button, NativeBaseProvider } from 'native-base'
+import {Text,Box, Input, Icon, Button, NativeBaseProvider, FormControl } from 'native-base'
 import theme from '../../styles/theme.json'
 import { MaterialIcons } from '@expo/vector-icons'
 import { ContainerImage } from '../../styles'
@@ -29,6 +29,7 @@ const handleClick = () => setMostrar(!mostrar);
     const [telefone, setTelefone] = useState('');
 
     function mtel(v){
+
         v=v.replace(/\D/g,""); //Remove tudo o que não é dígito
         v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
         v=v.replace(/(\d)(\d{4})$/,"$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
@@ -56,6 +57,10 @@ const handleClick = () => setMostrar(!mostrar);
         if(name ==='' ||email==='' || senha==='' || telefone===''){
             alert('preencha')
             return;
+          }
+          if(telefone.lenght <13){
+              alert('Numero invalido')
+              return
           }
           Cadastro(email, senha, name, telefone)
       }
@@ -166,7 +171,7 @@ const handleClick = () => setMostrar(!mostrar);
         )
       }
     return (
-        <NativeBaseProvider >
+
         <Box bg={theme.colors['primary']} flex={1} 
         alignItems='center' justifyContent='space-evenly'>
 
@@ -178,30 +183,47 @@ const handleClick = () => setMostrar(!mostrar);
             />
 
             <Box w='85%' >
-            <Text color='#fff' mx='2' fontSize='md'>Nome</Text>
-            <Input value={name} onChangeText={(text)=> setName(text)}
+            <FormControl>
+
+                <FormControl.Label _text={{
+                    fontSize: 'md',
+                    color:'gray.50'
+                }}>Nome</FormControl.Label>
+                <Input value={name} onChangeText={(text)=> setName(text)}
             variant="underlined" mb='10px' color='#fff' fontSize='14px'
             _focus={{
                  borderBottomWidth:1.5,
                  borderBottomColor:'gray.50'
             }}
             />
-            <Text color='#fff' mx='2'  fontSize='md'>E-mail</Text>
-            <Input value={email} onChangeText={(text)=> setEmail(text)}
+                <FormControl.Label _text={{
+                    fontSize: 'md',
+                    color:'gray.50'
+                }}>E-mail</FormControl.Label>
+                <Input value={email} onChangeText={(text)=> setEmail(text)}
             variant="underlined"  mb='10px' color='#fff' fontSize='14px'
             _focus={{
                 borderBottomWidth:1.5,
                 borderBottomColor:'gray.50'
            }}/>
-            <Text color='#fff' mx='2' fontSize='md'>Telefone</Text>
-            <Input value={telefone} onChangeText={(text)=> mtel(text)}
+                <FormControl.Label _text={{
+                    fontSize: 'md',
+                    color:'gray.50'
+                }}>Telefone</FormControl.Label>
+                <Input value={telefone} onChangeText={(text)=> mtel(text)}
             variant="underlined"  mb='10px' color='#fff' fontSize='14px'
             _focus={{
                 borderBottomWidth:1.5,
                 borderBottomColor:'gray.50'
            }}/>
-            <Text color='#fff' fontSize='md' mx='2' >Senha</Text>
-           <Input  value={senha} onChangeText={(text)=> setSenha(text)}
+                <FormControl.HelperText _text={{
+                    color:'gray.200'
+                }}>Numero de telefone com DDD</FormControl.HelperText>
+                <FormControl.Label _text={{
+                    fontSize: 'md',
+                    color:'gray.50'
+                }}>Senha</FormControl.Label>
+                <Input  value={senha} onChangeText={(text)=> setSenha(text)}
            _focus={{
             borderBottomWidth:1.5,
             borderBottomColor:'gray.50'
@@ -219,27 +241,11 @@ const handleClick = () => setMostrar(!mostrar);
             }
             </Button>} 
             />
-            {/* <Text color='#fff' fontSize='md' mx='2' >Confirmar Senha</Text>
-           <Input  variant = "underlined"   mb='10px'
-            size='md' color='#fff' fontSize='14px'
-           type={ mostrar ? "text" : "password" }
-           
-        //    Colocando na parte direita do input
-           InputRightElement={
-            <Button size="sm" variant="ghost" w="1/6" h="full" onPress={handleClick}>
-            {mostrar ? 
-            <Icon as={<MaterialIcons name="visibility-off" />} size={4} /> 
-            : <Icon as={<MaterialIcons name="visibility"  />} size={4}/>
-            }
-            </Button>} 
-            /> */}
-{/*             
-            <Box >
-                <Text color='#fff'><Switch size='sm'/> Eu li e concordo com as<Text bold> politicas de privacidades</Text></Text>
-            </Box> */}
-
-           
-                
+            <FormControl.HelperText _text={{
+                    color:'gray.200'
+                }}>Senha com no minimo 6 digitos</FormControl.HelperText>
+            </FormControl>
+             
             </Box>
            
 
@@ -272,7 +278,6 @@ const handleClick = () => setMostrar(!mostrar);
                 </Button>
             </Box>
         </Box>
-    </NativeBaseProvider>
  
  )
  

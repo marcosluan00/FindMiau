@@ -101,7 +101,9 @@ function AuthProvider ({ children }) {
 
     return (
         <AuthContext.Provider value={{ signed: !!user, 
-        user, 
+        user,
+        setUser, 
+        storageUser,
         Cadastro, 
         Login, 
         Deslogar,

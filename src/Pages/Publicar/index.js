@@ -1,10 +1,11 @@
-import React, { useLayoutEffect, useState, useContext } from 'react';
+import React, { useLayoutEffect, useState, useContext, useEffect } from 'react';
 import { View, Platform, KeyboardAvoidingView, Modal } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import uuid from 'uuid'
 import { Box, 
   NativeBaseProvider,
-  Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input, ScrollView, IconButton } from 'native-base'
+  Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input, ScrollView, IconButton, Icon } from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../Components/Header';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'
@@ -18,6 +19,8 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { ContainerImage } from '../../styles'
 
 import * as ImagePicker from 'expo-image-picker'
+import MapView, {Marker} from 'react-native-maps';
+import * as Location from 'expo-location'
 
 export default function Publicar() {
 
@@ -30,6 +33,10 @@ export default function Publicar() {
   const [ handleTelefone, setHandleTelefone ] = useState(false)
   const [ ajuda, setAjuda ] = useState('')
   const [ open, setOpen]= useState(false)
+  const [location, setLocation] = useState(null)
+
+  const [marker, setMarker] = useState([])
+  const [showMap, setShowMap] =useState(false)
 
   const { user } = useContext(AuthContext)
 
@@ -39,6 +46,10 @@ export default function Publicar() {
  function handleBack(){
    navigation.goBack()
    
+ }
+ function handleCoord(coord) {
+   setMarker(coord)
+   console.log(marker)
  }
  async function uploadFileCamera() {
    let pickerResult = await ImagePicker.launchCameraAsync({
@@ -104,8 +115,6 @@ async function uploadImageAsync(uri) {
         return await getDownloadURL(fireRef);
 }
 
- 
-
  async function handlePublicar() {
     if(categoria === '' || titulo === '' || descricao === '' ){
       alert('Algum campo não preenchido')
@@ -154,6 +163,20 @@ async function uploadImageAsync(uri) {
         })
       }
  }
+ useEffect(() => {
+  (async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync()
+    if(status !=='granted') {
+      alert('Permissao NEGADA')
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location)
+
+  })()
+},[])
+
 
  return (
   <ScrollView bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' >
@@ -294,6 +317,10 @@ async function uploadImageAsync(uri) {
           borderWidth:'1.5',
           borderColor:'blue.400'
         }}
+        InputRightElement={
+          <Button size="sm" variant="ghost" w="1/6" h="full" onPress={()=> setShowMap(true)}>
+          <Icon as={<Ionicons name="locate-sharp"/>} size='xl' color='blue.500'/> 
+          </Button>} 
         />
         <FormControl.HelperText >
           Ponto de referencia ou endereço
@@ -316,13 +343,6 @@ async function uploadImageAsync(uri) {
            </>
           )
         }
-        
-
-          <Box w='100%' alignItems='center'  flexDirection='row'>
-          <Switch onValueChange={itemValue => setHandleTelefone(itemValue)}
-          color='#000'
-          /> <Text color='blue.400'> Compartilhar meu número de telefone </Text>
-          </Box>
 
         </FormControl>
         </KeyboardAvoidingView>
@@ -368,8 +388,30 @@ async function uploadImageAsync(uri) {
           </Button>
         
           </Box>
-
       </Modal>
+          <Modal visible={showMap} animationType='slide' transparent={true}>
+          <Box flex={1}>
+            <Button onPress={()=>setShowMap(false)}>X</Button>
+            <MapView style={{ flex: 1}}
+            showsUserLocation
+            loadingEnabled
+            mapType='standard'
+            initialRegion={{
+              latitude: 2.826426,
+              longitude: -60.678423,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05
+              }}
+            onPress={(e)=> handleCoord(e.nativeEvent.coordinate)}
+            >
+                <Marker
+                coordinate={marker}
+                key={Math.random().toString()}
+                />
+            </MapView>
+            <Button onPress={()=>setShowMap(false)}>OK</Button>
+          </Box>
+        </Modal>
         
     </ScrollView> 
   );

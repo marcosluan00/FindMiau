@@ -7,7 +7,8 @@ import { Box,
     Icon,
     FlatList,
     Pressable,
-    Text
+    Text,
+    Avatar
    } from 'native-base'
 import theme from '../../styles/theme.json'
 import { EvilIcons, Feather, MaterialCommunityIcons   } from '@expo/vector-icons'
@@ -17,10 +18,11 @@ import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
 import { AuthContext } from '../../contexts/auth'
 
-import { db } from '../../firebaseConnection'
+import { db, storage } from '../../firebaseConnection'
 import { collection, orderBy, query, onSnapshot, where } from 'firebase/firestore'
 
 import Card from '../../Components/Card'
+import { getDownloadURL, ref } from 'firebase/storage'
 
 const HomeBase = ()=>{
     const {user, Deslogar} = useContext(AuthContext)
@@ -28,6 +30,7 @@ const HomeBase = ()=>{
     const navigation = useNavigation()
     const [loading, setLoading] = useState(true)
     const [ open, setOpen]= useState(false)
+    const [url, setUrl] = useState()
 
     const [ buttonAdocao, setButtonAdocao ] = useState(true)
     const [ buttonPerdidos, setButtonPerdidos] = useState(false)
@@ -40,11 +43,14 @@ const HomeBase = ()=>{
     function handlePostagens() {
         navigation.navigate('Posts')
     }
+    function handlePerfil(){
+        navigation.navigate('Perfil')
+    }
 
     const [lista, setLista] = useState([])
 
     useEffect(() => {
-
+        setOpen(false)
         const q = query(collection(db, 'Postagens'), where('categoria', '==', 'adocao'))
 
         const subscriber = onSnapshot((q), snap => {
@@ -60,6 +66,27 @@ const HomeBase = ()=>{
             setLoading(false)
             setOpen(false)
         })
+        async function load(){
+            try{
+              getDownloadURL(ref(storage, `users/${user.uid}`))
+              .then((url)=>{
+                const xhr = new XMLHttpRequest();
+                xhr.responseType = 'blob';
+                xhr.onload = (evt) => {
+                  const blob = xhr.response
+                }
+                xhr.open('GET', url)
+                xhr.send()
+        
+                setUrl(url)
+              }).catch((e)=>{
+                console.log(e)
+              })
+            } catch(error){
+              alert(error)
+            }
+          }
+          load()
         return () => subscriber()
     }, [])
 
@@ -313,8 +340,16 @@ const HomeBase = ()=>{
         <Box position='absolute' alignItems='center'
         top='24'
         p='1'
-        >
-            <Text fontWeight='bold' fontSize='xl'>{user.nome}</Text>
+        >   {
+                url ? (
+                    <Avatar size='xl'
+                    source={{uri: url}}
+                    />
+                ) : (
+                    <Avatar size='xl'/>
+                )
+            }
+            <Text fontWeight='bold' fontSize='xl' numberOfLines={1}>{user.nome}</Text>
             <Text fontSize='sm' fontStyle='italic'>{user.email}</Text>
 
             {/* Botões do menu lateral */}
@@ -337,6 +372,16 @@ const HomeBase = ()=>{
                     color:'black'
                 }}> 
                 Postagens
+                </Button>
+                <Button variant='ghost'
+                onPress={handlePerfil}
+                leftIcon={<MaterialCommunityIcons name="account" size={24} color="#64AFFC" />}
+                _text={{
+                    fontSize:'16',
+                    color:'black'
+                }}
+                >
+                    Perfil
                 </Button>
                 <Button variant='ghost' 
                 onPress={()=>Deslogar()}
