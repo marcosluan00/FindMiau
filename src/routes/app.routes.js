@@ -57,6 +57,9 @@ function ScreenRoutes() {
             />
             <Stack.Screen
             name='Chat'
+            options={{
+                headerTitle: 'Comentarios'
+            }}
             component={Chat}
             />
             <Stack.Screen

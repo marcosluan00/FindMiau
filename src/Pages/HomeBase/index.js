@@ -36,14 +36,17 @@ const HomeBase = ()=>{
     const [ buttonPerdidos, setButtonPerdidos] = useState(false)
     const [ buttonEncontrados, setButtonEncontrados ] = useState(false)
     const [ buttonAjuda, setButtonAjuda ] = useState(false)
-
+    
     function handlePost() {
+        
         navigation.navigate('Publicar')
     }
     function handlePostagens() {
+        setOpen(false)
         navigation.navigate('Posts')
     }
     function handlePerfil(){
+        setOpen(false)
         navigation.navigate('Perfil')
     }
 

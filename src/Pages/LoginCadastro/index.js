@@ -34,8 +34,9 @@ const handleClick = () => setMostrar(!mostrar);
         v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); //Coloca parênteses em volta dos dois primeiros dígitos
         v=v.replace(/(\d)(\d{4})$/,"$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
         return setTelefone(v);
+        
     }
-
+    
     function toggleLogin(){
         setLogin(!login)
         setEmail('')
@@ -58,13 +59,16 @@ const handleClick = () => setMostrar(!mostrar);
             alert('preencha')
             return;
           }
-          if(telefone.lenght <13){
-              alert('Numero invalido')
-              return
+          if(telefone.length >= 15){
+            Cadastro(email, senha, name, telefone)
+          } else {
+              alert('telefone invalido')
+              return;
           }
-          Cadastro(email, senha, name, telefone)
+          
+          
       }
-
+      
     if(login) {
         return (
             <KeyboardAvoidingView 
@@ -141,10 +145,6 @@ const handleClick = () => setMostrar(!mostrar);
                 {/* ESQUECI A SENHA MALUUCO */}
                 <Box w='85%'>
     
-                <Button  variant="ghost" mb={5}>
-                    <Text color='#fff' fontSize='md'>Esqueci minha senha</Text>
-                </Button>
-    
                 <Button   bg={theme.colors['blue-dark']}
                     borderRadius="xl"
                     h="50px"
@@ -202,6 +202,10 @@ const handleClick = () => setMostrar(!mostrar);
                 }}>E-mail</FormControl.Label>
                 <Input value={email} onChangeText={(text)=> setEmail(text)}
             variant="underlined"  mb='10px' color='#fff' fontSize='14px'
+            autoComplete={false}
+            _android={{
+                autoComplete:false
+            }}
             _focus={{
                 borderBottomWidth:1.5,
                 borderBottomColor:'gray.50'
@@ -212,13 +216,15 @@ const handleClick = () => setMostrar(!mostrar);
                 }}>Telefone</FormControl.Label>
                 <Input value={telefone} onChangeText={(text)=> mtel(text)}
             variant="underlined"  mb='10px' color='#fff' fontSize='14px'
+            maxLength={15}
+            
             _focus={{
                 borderBottomWidth:1.5,
                 borderBottomColor:'gray.50'
            }}/>
                 <FormControl.HelperText _text={{
                     color:'gray.200'
-                }}>Numero de telefone com DDD</FormControl.HelperText>
+                }}>Numero será usado para entrar em contato</FormControl.HelperText>
                 <FormControl.Label _text={{
                     fontSize: 'md',
                     color:'gray.50'

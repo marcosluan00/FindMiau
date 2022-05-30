@@ -32,7 +32,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#64AFFC"
       },
-      "package": "com.findmiau"
+      "package": "com.findmiau",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCGsdaIBZonbNVzXsz2dTfYXnpbabu627s"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,46 +1,25 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { ScrollView, StyleSheet, Image, TouchableOpacity, View } from 'react-native'
 import * as Linking from 'expo-linking';
 
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { AuthContext } from '../../contexts/auth'
 
-import { Box, Text, AspectRatio, Stack, Heading, Input, Button, IconButton, Icon, HStack, Pressable } from 'native-base'
+import { Box, Text, AspectRatio, Stack, Heading, 
+  Input, Button, IconButton, Icon, HStack, Pressable, Badge,
+  ScrollView  } from 'native-base'
 import { ContainerImage } from '../../styles'
+import MapView, { Marker } from 'react-native-maps';
 
 import { useNavigation } from '@react-navigation/native'
 import {
-  collection,
-  addDoc,
-  orderBy,
-  query,
-  onSnapshot
+  deleteDoc, doc, addDoc, collection, updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebaseConnection'
-import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat';
 
 export default function Modal (props) {
     const { user } = useContext(AuthContext)
     const [messages, setMessages] = useState([]);
-
-    useEffect(() => {
-      const collectionRef = collection(db, 'comentarios_'+ props.route.params?.idDoc);
-      const q = query(collectionRef, orderBy('createdAt', 'desc'));
-  
-      const unsubscribe = onSnapshot(q, querySnapshot => {
-        setMessages(
-          querySnapshot.docs.map(doc => ({
-            _id: doc.data()._id,
-            createdAt: doc.data().createdAt.toDate(),
-            text: doc.data().text,
-            user: doc.data().user
-          }))
-        );
-      });
-  
-      return () => unsubscribe();
-    }, []);
-
+    const [marker, setMarker] = useState(null);
 
     const navigation = useNavigation()
 
@@ -50,7 +29,10 @@ export default function Modal (props) {
     function handleWhat(){
       Linking.openURL("https://api.whatsapp.com/send?phone=55"+props.route.params?.telefone+"&text=Olá vim pela sua publicação no aplicativo FindMiau")
     }
-
+    function handleBack(){
+      navigation.goBack()
+      
+    }
     function irComentarios() {
       navigation.navigate('Chat', {doc: props.route.params?.idDoc, img: props.route.params?.imageUrl })
     }
@@ -58,10 +40,50 @@ export default function Modal (props) {
     function irEditar(){
       navigation.navigate('Editar', {doc: props.route.params?.idDoc})
     }
-    
+    function excluirPost(){
+      const ref = doc(db, "Postagens", props.route.params?.idDoc)
+      deleteDoc(ref)
+      navigation.goBack()
+    }
+    async function handleConcluido() {
+      await addDoc(collection(db, 'Resolvidos/'), {
+        data: new Date(),
+        autor:user.nome,
+        telefone: user.telefone,
+        categoria: props.route.params?.categoria,
+        userId: user.uid,
+        titulo: props.route.params?.titulo,
+        descricao: props.route.params?.descricao,
+        localizao: props.route.params?.localizao,
+        localizacaoCod: props.route.params?.localizacaoCod,
+        imageUrl: props.route.params?.imageUrl,
+        infoAjuda: props.route.params?.infoAjuda,
+        caracteristicas: {
+          animal: props.route.params?.caracteristicas?.animal,
+          porte: props.route.params?.caracteristicas?.porte,
+          sexo: props.route.params?.caracteristicas?.sexo,
+          vacinado: props.route.params?.caracteristicas?.vacinado,
+          castramento: props.route.params?.caracteristicas?.castramento,
+        }
+      }).then((documento)=> {
+        const refAtt = doc(db, 'Resolvidos/', documento.id)
+        updateDoc(refAtt, {
+          idDoc : documento.id
+        }).then(()=> {
+          const ref = doc(db, "Postagens", props.route.params?.idDoc)
+          deleteDoc(ref)
+        })
+        
+        alert('Sucesso ')
+        handleBack()
+      })
+    }
+
+    console.log(props.route.params?.localizacaoCod)
+
     return (
-        <Box bgColor="rgba(100, 175, 252, 0.7)" h='100%'>
-        <Box maxW="98%" rounded="lg" borderColor="coolGray.200" borderWidth="1" 
+        <ScrollView bgColor="rgba(100, 175, 252, 0.7)">
+        <Box maxW="98%" rounded="lg" borderColor="coolGray.200" borderWidth="1"
         flex={1}
         m='1'
         _dark={{
@@ -85,7 +107,7 @@ export default function Modal (props) {
                   }
               </Box>
     
-              <Stack px="4" space={1}>
+              <Stack px="4">
 
               <Text color='blue.300' fontSize='sm' textAlign='right' fontWeight='bold' 
               my='1'
@@ -109,22 +131,107 @@ export default function Modal (props) {
                 {props.route.params?.descricao}
                 </Text >
                 </Stack>
+                <Pressable h='40' zIndex={9} bgColor='transparent'
+                
+                >
 
-                <Box h='1/5' my='2'>
-                  <Text fontStyle='italic'> Aqui vai tem algum campo </Text>
+                  {
+                    props.route.params?.localizacaoCod?.lat ? (
+                      <MapView
+                  initialRegion={{
+                    latitude:props.route.params?.localizacaoCod?.lat,
+                    longitude: props.route.params?.localizacaoCod?.lng,
+                    latitudeDelta: 0.007,
+                    longitudeDelta: 0.007
+                  }}
+                  
+                  style={{
+                    flex:1
+                  }}
+                  ><Marker
+                  coordinate={{
+                    latitude:props.route.params?.localizacaoCod?.lat,
+                    longitude: props.route.params?.localizacaoCod?.lng
+                   }}
+                  />
+
+                  </MapView>
+                    ) : (
+                      <Text textAlign='center'> Ocorreu um erro e a localização não foi encontrada </Text>
+                    )
+                  }
+                  
+                  
+                </Pressable>
+
+                
+                <Text mb='2' fontSize="sm" fontWeight="400"> Nº para contato: {props.route.params?.telefone} </Text>
+               
+
+               <Box alignItems="center" flexDir='row' justifyContent='center' my='2'
+                flexWrap='wrap'
+                >
+                  {
+                    props.route.params?.caracteristicas?.animal ? (
+            <Badge backgroundColor='blue.400' 
+              rounded="full" zIndex={1} variant="solid" py='1.5' px='4' m='1'
+              _text={{
+              fontSize: 'md'
+              
+              }}>
+              {props.route.params?.caracteristicas?.animal}</Badge> 
+              )
+                    :(<> </>)
+                  }
+              {
+                    props.route.params?.caracteristicas?.porte ? (
+            <Badge backgroundColor='blue.400' 
+              rounded="full" zIndex={1} variant="solid" py='1.5' px='4' m='1'
+              _text={{
+              fontSize: 'md'
+              
+              }}>
+              {props.route.params?.caracteristicas?.porte}</Badge> 
+              )
+                    :(<> </>)
+                  }
+              {
+                    props.route.params?.caracteristicas?.sexo ? (
+            <Badge backgroundColor='blue.400' 
+              rounded="full" zIndex={1} variant="solid" py='1.5' px='4' m='1'
+              _text={{
+              fontSize: 'md'
+              
+              }}>
+              {props.route.params?.caracteristicas?.sexo}</Badge> 
+              )
+                    :(<> </>)
+                  }
+              {
+                props.route.params?.categoria === 'adocao' ? (
+                  <>
+                  <Badge backgroundColor='blue.400' 
+              rounded="full" zIndex={1} variant="solid" py='1.5' px='4' m='1'
+              _text={{
+              fontSize: 'md'
+              
+              }}>{props.route.params?.caracteristicas.castramento}</Badge>
+                  <Badge backgroundColor='blue.400' 
+              rounded="full" zIndex={1} variant="solid" py='1.5' px='4' m='1'
+              _text={{
+              fontSize: 'md'
+              
+              }}>{props.route.params?.caracteristicas.vacinado}</Badge>
+                  </>
+                ):
+                (
+                  <></>
+                )
+              }
+            </Box>
                 
 
-                </Box>
-
-                {
-                props.route.params?.telefone ? (
-                    <Text mb='2' fontSize="sm" fontWeight="400"> Nº para contato: {props.route.params?.telefone} </Text>
-                ) : (
-                    <>
-                    </>
-                )
-                }
-                <Box flexDir='row'>
+                <Box flexDir='row' my='1'>
                 <Pressable flexDir='row' 
                  p='1' mr='2'
                 onPress={handleLigar}
@@ -149,7 +256,8 @@ export default function Modal (props) {
               </Stack>
 
 
-              <HStack justifyContent='space-evenly' alignItems='center'>
+
+              <HStack justifyContent='space-evenly' alignItems='center' my='4'>
                 
                 <Pressable alignItems='center'
                 onPress={irComentarios}
@@ -157,21 +265,29 @@ export default function Modal (props) {
                 <Icon as={MaterialCommunityIcons} name="chat-processing" size={10} color="blue.400" />
                 <Text color="blue.600" > Comentarios </Text>
                 </Pressable>
-                
-                <Pressable alignItems='center'
-                onPress={() => navigation.goBack()}
-                >
-                <Icon as={Feather} name="minimize-2" size={10} color="blue.400"/>
-                <Text color="blue.600" textAlign='center'> Minimizar </Text>
-                </Pressable>
 
                 { (user.uid === props.route.params?.userId) ? (
-                  <Pressable alignItems='center'
+                  <Box flexDir='row'>
+                    <Pressable alignItems='center'
                   onPress={irEditar}
+                  mr='6'
                   >
                   <Icon as={Feather} name="edit" size={8} color="blue.400"/>
                   <Text color="blue.600" textAlign='center'> Editar </Text>
                   </Pressable>
+                  <Pressable alignItems='center' onPress={handleConcluido}
+                  >
+                  <Icon as={Feather} name="check-square" size={8} color="blue.400"/>
+                  <Text color="blue.600" textAlign='center'> Resolvido </Text>
+                  </Pressable>
+                  <Pressable alignItems='center' onPress={excluirPost}
+                  >
+                  <Icon as={Feather} name="trash" size={8} color="blue.400"/>
+                  <Text color="blue.600" textAlign='center'> Excluir </Text>
+                  </Pressable>
+                  
+                  </Box>
+                  
                 ) : (
                   <></>
                 ) 
@@ -179,6 +295,6 @@ export default function Modal (props) {
                 </HStack>
                 
         </Box>
-        </Box>
+        </ScrollView>
     )
 }

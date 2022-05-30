@@ -81,8 +81,9 @@ function AuthProvider ({ children }) {
                 setLoadingAuth(false)
             })
         }).catch((error)=> {
-            console.log(error)
-            alert('Error' + error)
+            
+            alert(error.message);
+            
             setLoadingAuth(false)
         })
     } // fim do cadastro

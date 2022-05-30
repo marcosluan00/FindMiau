@@ -77,11 +77,11 @@ const customRenderBubble = props => {
 
       wrapperStyle={{
         right: { 
-        width: '70%',
+        width: '96%',
         marginVertical:2
         },
         left: { 
-        width: '70%',
+        width: '96%',
         marginVertical:2
       },
       }}
@@ -97,24 +97,24 @@ const customRenderBubble = props => {
       }}
       containerToPreviousStyle={{
         right: { borderTopRightRadius: 15,
-          width: '70%'
+          width: '95%'
           },
           left: { borderTopLeftRadius: 15,
-          width: '70%' },
+          width: '95%' },
       }}
       containerToNextStyle={{
         right: { borderTopRightRadius: 15,
-          width: '70%'
+          width: '95%'
           },
           left: { borderTopLeftRadius: 15,
-          width: '70%' },
+          width: '95%' },
       }}
       containerStyle={{
         right: { borderTopRightRadius: 15,
-          width: '70%',
+          width: '95%',
           },
           left: { borderTopLeftRadius: 15,
-          width: '70%',
+          width: '95%',
           },
       }}
     />

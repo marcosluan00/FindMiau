@@ -1,14 +1,13 @@
 import React, { useLayoutEffect, useState, useContext, useEffect } from 'react';
 import { View, Platform, KeyboardAvoidingView, Modal } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-
+import {launchCamera} from 'react-native-image-picker';
 import uuid from 'uuid'
 import { Box, 
   NativeBaseProvider,
   Button, Text, ZStack, Pressable, Select, FormControl, Switch, Input, ScrollView, IconButton, Icon } from 'native-base'
 import { useNavigation } from '@react-navigation/native';
 import { Header } from '../../Components/Header';
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Feather, Ionicons, FontAwesome,Foundation   } from '@expo/vector-icons'
 import { AuthContext } from '../../contexts/auth'
 
 
@@ -19,48 +18,119 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { ContainerImage } from '../../styles'
 
 import * as ImagePicker from 'expo-image-picker'
-import MapView, {Marker} from 'react-native-maps';
+import MapView, { Marker, Region, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location'
+import Geocoder from 'react-native-geocoding';
+
 
 export default function Publicar() {
 
-
-  const [categoria, setCategoria] = useState('');
-  const [titulo, setTitulo] = useState('')
+  const [ categoria, setCategoria] = useState('');
+  const [ titulo, setTitulo] = useState('')
   const [ url, setUrl]= useState(null)
   const [ descricao, setDescricao] = useState('')
   const [ localizacao, setLocalizacao] = useState('')
-  const [ handleTelefone, setHandleTelefone ] = useState(false)
   const [ ajuda, setAjuda ] = useState('')
   const [ open, setOpen]= useState(false)
-  const [location, setLocation] = useState(null)
-
-  const [marker, setMarker] = useState([])
-  const [showMap, setShowMap] =useState(false)
+  const [ location, setLocation] = useState(null)
+  //Caracteristicas
+  const [ sexo, setSexo] = useState('');
+  const [ porte, setPorte] = useState('');
+  const [ vacinado, setVacinado] = useState('');
+  const [ animal, setAnimal] = useState('');
+  const [ castrado, setCastramento] = useState('')
+  const [ marker, setMarker] = useState(null)
+  const [ endCood, setEndCood] = useState(null)
+  const [ showMap, setShowMap] =useState(false)
 
   const { user } = useContext(AuthContext)
+  const [ region, setRegion ] = useState(null);
 
 
  const navigation = useNavigation()
+ 
+ Geocoder.init("AIzaSyCGsdaIBZonbNVzXsz2dTfYXnpbabu627s");
+
+ const initialRegion={
+  latitude: 2.826426,
+  longitude: -60.678423,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05
+ }
+
+ function handleCoord(coord) {
+  setMarker(coord)
+
+  setEndCood({
+    lat: coord.latitude,
+    lng: coord.longitude,
+  })
+
+  handleName(coord.latitude, coord.longitude)
+}
+function handleName(lat, long){
+  Geocoder.from({
+    latitude: lat,
+    longitude: long
+  })
+		.then(json => {
+
+      var numero = json.results[0].address_components[0].long_name;
+      var rua = json.results[0].address_components[1].long_name;
+      var bairro = json.results[0].address_components[2].long_name;
+
+      var end = rua +", "+numero+", "+ bairro;
+
+      setLocalizacao(end)
+		})
+		.catch(error => console.warn(error));
+
+}
+
+function buscaPorEndereco(){
+    Geocoder.from(localizacao)
+		.then(json => {
+			var location = json.results[0].geometry.location;
+      console.log(localizacao)
+			console.log(location);
+      setEndCood(location);
+		}).then(()=> {
+      handlePublicar()
+    })
+		.catch(error => console.warn(error));
+  }
+
+ const getCurrentPosition = async()=> {
+  let { status } = await Location.requestForegroundPermissionsAsync();
+
+  if (status !== "granted"){
+    alert("Permissão negada !!")
+  }
+  let {
+    coords: { latitude, longitude },
+  } = await Location.getCurrentPositionAsync();
+
+  setRegion({ latitude, longitude, latitudeDelta: 0.05, longitudeDelta: 0.05 });
+  setMarker({ latitude, longitude})
+}
+
+ useEffect(() => {
+  getCurrentPosition()
+},[])
+
  
  function handleBack(){
    navigation.goBack()
    
  }
- function handleCoord(coord) {
-   setMarker(coord)
-   console.log(marker)
- }
- async function uploadFileCamera() {
+ 
+ async function uploadFileCamera() {  
    let pickerResult = await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    presentationStyle: 0,
-    aspect: [4, 3],
+     mediaTypes: 'Images'
    })
-   console.log('Imagem selecionada')
    
    uploadFileFirestore(pickerResult)
-   setOpen(false)
+   
  }
  
  async function uploadFileGalery() {
@@ -74,7 +144,7 @@ export default function Publicar() {
   
   uploadFileFirestore(pickerResult)
   
-  setOpen(false)
+  
 }
 
 const uploadFileFirestore = async (pickerResult) => {
@@ -108,51 +178,44 @@ async function uploadImageAsync(uri) {
         
         const result = await uploadBytes(fireRef, blob).then((response)=> {
           console.log('foi')
-          console.log(response)
         }).catch((e)=> {
           console.log(e)
         })
         return await getDownloadURL(fireRef);
 }
 
+  function publicarPost(){
+    buscaPorEndereco(localizacao).then(()=> {
+      handlePublicar()
+    });
+    
+  }
+
  async function handlePublicar() {
     if(categoria === '' || titulo === '' || descricao === '' ){
       alert('Algum campo não preenchido')
       return
-    }
-      if(handleTelefone){
+    }    
+
         await addDoc(collection(db, 'Postagens/'), {
           data: new Date(),
           autor:user.nome,
-          categoria: categoria,
-          userId: user.uid,
           telefone: user.telefone,
-          titulo: titulo,
-          descricao: descricao,
-          localizao: localizacao,
-          imageUrl: url,
-          infoAjuda: ajuda,
-        }).then((documento)=> {
-          const refAtt = doc(db, 'Postagens/', documento.id)
-          updateDoc(refAtt, {
-            idDoc : documento.id
-          })
-          alert('Sucesso')
-          handleBack()
-        })
-
-      } else {
-        await addDoc(collection(db, 'Postagens/'), {
-          data: new Date(),
-          autor:user.nome,
           categoria: categoria,
           userId: user.uid,
           titulo: titulo,
           descricao: descricao,
           localizao: localizacao,
+          localizacaoCod: endCood,
           imageUrl: url,
           infoAjuda: ajuda,
-
+          caracteristicas: {
+            animal: animal,
+            porte: porte,
+            sexo: sexo,
+            vacinado: vacinado,
+            castramento: castrado,
+          }
         }).then((documento)=> {
           const refAtt = doc(db, 'Postagens/', documento.id)
           updateDoc(refAtt, {
@@ -161,23 +224,9 @@ async function uploadImageAsync(uri) {
           alert('Sucesso ')
           handleBack()
         })
-      }
+      
  }
- useEffect(() => {
-  (async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync()
-    if(status !=='granted') {
-      alert('Permissao NEGADA')
-      return
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location)
-
-  })()
-},[])
-
-
+ 
  return (
   <ScrollView bgColor="rgba(100, 175, 252, 0.7)" flex={1} alignContent='center' >
   <Header
@@ -189,7 +238,7 @@ async function uploadImageAsync(uri) {
  nomeIconeR='arrow-right-bold-circle'
  h={30}
  w='190px'
- ClickR={handlePublicar}
+ ClickR={buscaPorEndereco}
  />
         {/* container image */}
           <Box w='97%'
@@ -210,14 +259,23 @@ async function uploadImageAsync(uri) {
               height='190'
               width='92%'
               />
-          <IconButton h='1/2' w='1/2' position='absolute' onPress={uploadFileGalery}
+          <IconButton h='1/2' w='1/2' position='absolute' right='10' onPress={uploadFileCamera}
             _icon={{
           as: MaterialCommunityIcons,
           name: "camera-plus",
           color: 'blue.400',
-          size:'2xl'
+          size:'4xl'
           }}>
             </IconButton>
+            <IconButton h='1/2' w='1/2' position='absolute' left='8' onPress={uploadFileGalery}
+            _icon={{
+          as: Foundation,
+          name: "photo",
+          color: 'blue.400',
+          size:'4xl'
+          }}>
+            </IconButton>
+           
 
             </Pressable>  
               
@@ -226,8 +284,23 @@ async function uploadImageAsync(uri) {
             ) : (
             <Pressable zIndex={9}
             height='90%' bgColor='gray.100' width='92%' borderRadius='md' alignItems='center' justifyContent='center'
-            onPress={uploadFileGalery}>
-            <MaterialCommunityIcons name="camera-plus" size={50} color="#64AFFC" />
+            >
+            <IconButton h='1/2' w='1/2' right='4' position='absolute' onPress={uploadFileCamera}
+            _icon={{
+          as: MaterialCommunityIcons,
+          name: "camera-plus",
+          color: 'blue.400',
+          size:'4xl'
+          }}>
+            </IconButton>
+            <IconButton h='1/2' w='1/2' left='4'position='absolute' onPress={uploadFileGalery}
+            _icon={{
+          as: Foundation,
+          name: "photo",
+          color: 'blue.400',
+          size:'4xl'
+          }}>
+            </IconButton>
             </Pressable>
             )
 
@@ -312,14 +385,18 @@ async function uploadImageAsync(uri) {
         <Input 
         value={localizacao}
         onChangeText={(item) => setLocalizacao(item)}
+        
         _focus={{
           bg:'#fff',
           borderWidth:'1.5',
           borderColor:'blue.400'
         }}
         InputRightElement={
-          <Button size="sm" variant="ghost" w="1/6" h="full" onPress={()=> setShowMap(true)}>
-          <Icon as={<Ionicons name="locate-sharp"/>} size='xl' color='blue.500'/> 
+          <Button size="sm" bgColor='blue.500' w="1/4" h="full" 
+          borderTopLeftRadius='none'
+          borderBottomLeftRadius='none'
+          onPress={()=> setShowMap(true)}>
+          <Icon as={<Ionicons name="locate-sharp"/>} size='xl' color='gray.50'/> 
           </Button>} 
         />
         <FormControl.HelperText >
@@ -342,6 +419,114 @@ async function uploadImageAsync(uri) {
            <>
            </>
           )
+        }
+        <FormControl.Label _text={{
+          fontSize:'md',
+          fontWeight:'bold'
+        }}>Informações Adicionais</FormControl.Label>
+        <Select accessibilityLabel="Animal" placeholder="Animal"  mt="1" selectedValue={animal} w='100%'
+        borderRadius='lg' 
+        _selectedItem={{
+          bg: "blue.300",
+          borderRadius:'sm'
+        }} _light={{
+          bg: "coolGray.50",
+          color: 'gray.800',
+        }} _dark={{
+          bg: "gray.500",
+          color: 'gray.800',
+        }}
+        borderColor='blue.400'
+        fontSize='md'
+        onValueChange={itemValue => setAnimal(itemValue)}>
+          <Select.Item label="Gato" value="Gato" />
+          <Select.Item label="Cachorro" value="Cachorro" />  
+        </Select>
+
+        <Select accessibilityLabel="Porte" placeholder="Porte"  mt="1" selectedValue={porte} w='100%'
+        borderRadius='lg' 
+        _selectedItem={{
+          bg: "blue.300",
+          borderRadius:'sm'
+        }} _light={{
+          bg: "coolGray.50",
+          color: 'gray.800',
+        }} _dark={{
+          bg: "gray.500",
+          color: 'gray.800',
+        }}
+        borderColor='blue.400'
+        fontSize='md'
+        onValueChange={itemValue => setPorte(itemValue)}>
+          <Select.Item label="Grande" value="Grande" />
+          <Select.Item label="Medio" value="Medio" />
+          <Select.Item label='Pequeno' value='Pequeno'/>  
+        </Select>
+
+        <Select accessibilityLabel="Sexo" placeholder="Sexo"  mt="1" selectedValue={sexo} w='100%'
+        borderRadius='lg' 
+        _selectedItem={{
+          bg: "blue.300",
+          borderRadius:'sm'
+        }} _light={{
+          bg: "coolGray.50",
+          color: 'gray.800',
+        }} _dark={{
+          bg: "gray.500",
+          color: 'gray.800',
+        }}
+        borderColor='blue.400'
+        fontSize='md'
+        onValueChange={itemValue => setSexo(itemValue)}>
+          <Select.Item label="Macho" value="Macho" />
+          <Select.Item label="Femea" value="Femea" />  
+          <Select.Item label="Ambos" value="Ambos" />
+        </Select>
+
+        {
+          categoria === 'adocao' ? (
+            <>
+            <Select accessibilityLabel="Vacina" placeholder="Vacina"  mt="1" selectedValue={vacinado} w='100%'
+        borderRadius='lg' 
+        _selectedItem={{
+          bg: "blue.300",
+          borderRadius:'sm'
+        }} _light={{
+          bg: "coolGray.50",
+          color: 'gray.800',
+        }} _dark={{
+          bg: "gray.500",
+          color: 'gray.800',
+        }}
+        borderColor='blue.400'
+        fontSize='md'
+        onValueChange={itemValue => setVacinado(itemValue)}>
+          <Select.Item label="Vacinado" value="Vacinado" />
+          <Select.Item label="Não Vacinado" value="Não Vacinado" />
+        </Select>
+
+        <Select accessibilityLabel="Castramento" placeholder="Castramento"  mt="1" selectedValue={castrado} w='100%'
+        borderRadius='lg' 
+        _selectedItem={{
+          bg: "blue.300",
+          borderRadius:'sm'
+        }} _light={{
+          bg: "coolGray.50",
+          color: 'gray.800',
+        }} _dark={{
+          bg: "gray.500",
+          color: 'gray.800',
+        }}
+        borderColor='blue.400'
+        fontSize='md'
+        onValueChange={itemValue => setCastramento(itemValue)}>
+          <Select.Item label="Castrado" value="Castrado" />
+          <Select.Item label="Não Castrado" value="Nao Castrado" />
+          <Select.Item label='Vale Castramento' value='Vale Castramento'/>
+        </Select>
+            </>
+          ) :
+          <> </>
         }
 
         </FormControl>
@@ -391,25 +576,56 @@ async function uploadImageAsync(uri) {
       </Modal>
           <Modal visible={showMap} animationType='slide' transparent={true}>
           <Box flex={1}>
-            <Button onPress={()=>setShowMap(false)}>X</Button>
+            <Button onPress={()=>setShowMap(false)}
+            position='absolute'
+            zIndex={9}
+            borderRadius='full'
+            bgColor='blue.400'
+            alignItems='center'
+            justifyContent='center'
+            p='1'
+            m='0'
+            top='3'
+            left='4'
+            h='12'
+            w='12'>
+              <Ionicons name="arrow-back" size={32} color="white" />
+            </Button>
+
+
             <MapView style={{ flex: 1}}
+            provider={PROVIDER_GOOGLE}
             showsUserLocation
             loadingEnabled
             mapType='standard'
-            initialRegion={{
-              latitude: 2.826426,
-              longitude: -60.678423,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05
-              }}
+            region={region}
+            initialRegion={initialRegion}
             onPress={(e)=> handleCoord(e.nativeEvent.coordinate)}
             >
-                <Marker
-                coordinate={marker}
-                key={Math.random().toString()}
-                />
+                {
+                  marker ? (
+                  <Marker
+                  coordinate={marker}
+                  key={Math.random().toString()}
+                  />
+                  ): <></>
+                }
             </MapView>
-            <Button onPress={()=>setShowMap(false)}>OK</Button>
+            <Button onPress={()=>setShowMap(false)}
+            position='absolute'
+            zIndex={9}
+            borderRadius='full'
+            bgColor='blue.400'
+            alignItems='center'
+            justifyContent='center'
+            p='1'
+            m='0'
+            bottom='3'
+            right='4'
+            h='16'
+            w='16'>
+              <Ionicons name="checkmark" size={40} color="white" />
+            </Button>
           </Box>
         </Modal>
         

@@ -13,7 +13,8 @@ import { Text,
     IconButton 
  } from 'native-base'
 import theme from '../../styles/theme.json'
-import { MaterialIcons,Ionicons, FontAwesome, Entypo  } from '@expo/vector-icons'
+import * as Linking from 'expo-linking';
+import { MaterialIcons,Ionicons, FontAwesome, Entypo, MaterialCommunityIcons  } from '@expo/vector-icons'
 import { ContainerImage } from '../../styles'
 import { formatDistance } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -21,6 +22,17 @@ import { useNavigation } from '@react-navigation/native'
 
 export default function Card ({ data }){
   const navigation = useNavigation()
+
+  function handleLigar(){
+    Linking.openURL('tel:'+data?.telefone)
+  }
+  function handleWhat(){
+    Linking.openURL("https://api.whatsapp.com/send?phone=55"+data?.telefone+"&text=Olá vim pela sua publicação no aplicativo FindMiau")
+  }
+
+  function irComentarios() {
+    navigation.navigate('Chat', {doc: data?.idDoc, img: data?.imageUrl })
+  }
 
   const dados = {
     ...data
@@ -45,6 +57,7 @@ export default function Card ({ data }){
 
     return(
         <Pressable alignItems="center" mt={1}
+        onPress={verMais}
         >
         <Box maxW="95%" rounded="lg" overflow="hidden" borderColor="coolGray.200" borderWidth="1" _dark={{
         borderColor: "coolGray.600",
@@ -97,10 +110,15 @@ export default function Card ({ data }){
             <HStack alignItems="center" space={3} justifyContent="space-between">
               <HStack alignItems="center">
                  <IconButton icon={<Icon as={Ionicons} name={"chatbubble-ellipses"}
+                 onPress={irComentarios}
                 />} _icon={{ color:"blue.400",size: "md"}}/>
-
-                 <IconButton icon={<Icon as={Entypo  } name={"location"}
+                  <IconButton icon={<Icon as={MaterialCommunityIcons} name={"phone"}
+                  onPress={handleLigar}
                 />} _icon={{ color:"blue.400",size: "md"}}/>
+                <IconButton icon={<Icon as={MaterialCommunityIcons} name={"whatsapp"}
+                />} _icon={{ color:"blue.400",size: "md"}}
+                onPress={handleWhat}
+                />
 
               </HStack>
               
