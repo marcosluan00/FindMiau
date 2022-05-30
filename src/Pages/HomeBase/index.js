@@ -11,7 +11,7 @@ import { Box,
     Avatar
    } from 'native-base'
 import theme from '../../styles/theme.json'
-import { EvilIcons, Feather, MaterialCommunityIcons   } from '@expo/vector-icons'
+import { EvilIcons, Feather, MaterialCommunityIcons, MaterialIcons, Ionicons   } from '@expo/vector-icons'
 import { ActivityIndicator, Modal } from 'react-native'
 import { Header } from '../../Components/Header'
 import { useNavigation } from '@react-navigation/native'
@@ -300,6 +300,8 @@ const HomeBase = ()=>{
                         }} onPress={()=> listaAjuda()}> Pedidos de ajuda </Button>
                     )
                 }
+                
+
 
                 </ScrollView>
                 </Box>
@@ -313,7 +315,8 @@ const HomeBase = ()=>{
                     />
 
                     </Box>
-                ): (
+                ): (<>
+                    
                     <FlatList 
                     showsVerticalScrollIndicator={false}
                     data={lista}
@@ -322,6 +325,17 @@ const HomeBase = ()=>{
                     shadow="9" 
                     /> }
                     />
+                    
+                    <Button h='16' w='16' py='1' px='2' m='1' bgColor='blue.500' borderRadius='full'
+                    alignItems='center' justifyContent='center'
+                    position='absolute'
+                    bottom='3' right='3'
+                    onPress={handlePost}
+                    >
+                    <Ionicons name="md-add-outline" size={50} color="white" />
+                    </Button>
+
+                    </>
                 )
             }
     <Modal visible={open} animationType='fade' transparent={true}>
@@ -353,7 +367,7 @@ const HomeBase = ()=>{
                 )
             }
             <Text fontWeight='bold' fontSize='xl' numberOfLines={1}>{user.nome}</Text>
-            <Text fontSize='sm' fontStyle='italic'>{user.email}</Text>
+            <Text fontSize='sm' fontStyle='italic' numberOfLines={1}>{user.email}</Text>
 
             {/* Botões do menu lateral */}
             <Box 

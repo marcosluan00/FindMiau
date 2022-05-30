@@ -70,13 +70,28 @@ const customtInputToolbar = props => {
     />
   );
 };
+const customView = props => {
+return(
+  <Box w='98%' pt='2' pl='3'>
+    <Text fontSize='md' textAlign='justify'
+    fontWeight='bold' numberOfLines={1}
+    >{props.currentMessage.user.name}</Text>
+
+  </Box>
+)
+
+}
+
+
 const customRenderBubble = props => {
   return (
     <Bubble
+  
       {...props}
 
       wrapperStyle={{
         right: { 
+        border: 5,
         width: '96%',
         marginVertical:2
         },
@@ -96,24 +111,24 @@ const customRenderBubble = props => {
         }
       }}
       containerToPreviousStyle={{
-        right: { borderTopRightRadius: 15,
+        right: { borderTopRightRadius: 5,
           width: '95%'
           },
-          left: { borderTopLeftRadius: 15,
+          left: { borderTopLeftRadius: 5,
           width: '95%' },
       }}
       containerToNextStyle={{
-        right: { borderTopRightRadius: 15,
+        right: { borderTopRightRadius: 5,
           width: '95%'
           },
-          left: { borderTopLeftRadius: 15,
+          left: { borderTopLeftRadius: 5,
           width: '95%' },
       }}
       containerStyle={{
-        right: { borderTopRightRadius: 15,
+        right: { borderTopRightRadius: 5,
           width: '95%',
           },
-          left: { borderTopLeftRadius: 15,
+          left: { borderTopLeftRadius: 5,
           width: '95%',
           },
       }}
@@ -186,7 +201,7 @@ useLayoutEffect(() => {
       renderBubble={props=> customRenderBubble(props)}
       onSend={messages => onSend(messages)}
       renderSend={props=> customSend(props)}
-
+      renderCustomView={props => customView(props)}
       renderAvatar={null}   
       messages={messages}
 
@@ -195,7 +210,7 @@ useLayoutEffect(() => {
         _id: user?.uid,
         name:user?.nome,
       }}
-      renderUsernameOnMessage={true}
+      renderUsernameOnMessage={false}
       
       
       placeholder='Envie sua mensagem'

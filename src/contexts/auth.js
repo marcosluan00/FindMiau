@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 import { db } from '../firebaseConnection'
+import { Alert } from 'native-base';
 
 export const AuthContext = createContext({})
 
@@ -54,8 +55,20 @@ function AuthProvider ({ children }) {
             storageUser(data)
             setLoadingAuth(false)
         }).catch((error) => {
-            console.log(error)
-            alert('Error' + error)
+            switch (error.code){
+                case 'auth/invalid-email':
+                    alert('Email invalido')
+                    break;
+                case `auth/wrong-password`: 
+                    alert('Senha incorreta')
+                    break;
+                case 'auth/user-not-found': 
+                    alert('Email não encontrado')
+                    break;
+                default: 
+                    alert('Houve algum erro, por favor tente novamente')
+                    break;
+            }
             setLoadingAuth(false)
         })
     }// fim do Login
@@ -81,8 +94,20 @@ function AuthProvider ({ children }) {
                 setLoadingAuth(false)
             })
         }).catch((error)=> {
-            
-            alert(error.message);
+            switch (error.code){
+                case 'auth/email-already-in-use':
+                    alert('Email está sendo usado por outro usuario')
+                    break;
+                case 'auth/invalid-email':
+                    alert('Email incorreto, verifique novamente')
+                    break;
+                case 'auth/weak-password':
+                    alert('Senha fraca, senha com pelo menos seis caracteres.')
+                    break;
+                default: 
+                    alert('Desculpe, houve um erro tente novamente')
+                    break;
+            }
             
             setLoadingAuth(false)
         })
